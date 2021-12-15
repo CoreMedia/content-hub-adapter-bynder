@@ -7,10 +7,10 @@ Please read the versioning section of the project to see what other CoreMedia ve
 If a project is inactive it means that the development has been discontinued and won't support future CoreMedia versions."
 )
 
-# Content Hub Adapter for Pixabay
+# Content Hub Adapter for Bynder
 
-The **content-hub-adapter-pixabay** extension is providing access to Pixabay content via configuration. 
-Pixabay content is available as an additional tree inside the CoreMedia Studio after a successful configuration of the content-hub-adapter.
+The **content-hub-adapter-bynder** extension is providing access to Bynder content via configuration. 
+Bynder content is available as an additional tree inside the CoreMedia Studio after a successful configuration of the content-hub-adapter.
 
 The  types of content working with this adapter are:
 - Images
