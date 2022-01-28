@@ -31,7 +31,7 @@ To find out which CoreMedia versions are supported by this project, please take 
 
     for recent changes
 
-* **[Issues](https://github.com/CoreMedia/content-hub-adapter-pixabay/issues)**
+* **[Issues](https://github.com/CoreMedia/content-hub-adapter-bynder/issues)**
 
     for known bugs and feature requests
 
