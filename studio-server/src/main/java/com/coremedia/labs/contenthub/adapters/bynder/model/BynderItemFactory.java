@@ -20,7 +20,8 @@ public class BynderItemFactory {
     } else if (asset instanceof Video) {
       return new BynderVideoItem(id, (Video) asset);
     } else {
-      throw new IllegalArgumentException("cannot create Bynder item for content hub object id " + id.asString());
+      throw new IllegalArgumentException("cannot create Bynder item for content hub object id " + id.asString() +
+              ", unknown asset type " + asset.getClass().getName());
     }
   }
 }
