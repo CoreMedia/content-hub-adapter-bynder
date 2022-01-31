@@ -4,6 +4,4 @@ public interface BynderContentHubSettings {
 
   String getApiKey();
   String getDisplayName();
-  boolean isSafeSearch();
-
 }

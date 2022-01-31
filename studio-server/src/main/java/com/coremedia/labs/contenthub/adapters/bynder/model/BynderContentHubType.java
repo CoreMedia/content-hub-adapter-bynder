@@ -4,11 +4,11 @@ import com.coremedia.contenthub.api.ContentHubType;
 
 public enum BynderContentHubType {
 
-  FOLDER(new ContentHubType("folder")),
-  IMAGE(new ContentHubType("image")),
-  VIDEO(new ContentHubType("video"));
+  FOLDER(new ContentHubType("Folder")),
+  IMAGE(new ContentHubType("Image")),
+  VIDEO(new ContentHubType("Video"));
 
-  private ContentHubType type;
+  private final ContentHubType type;
 
   BynderContentHubType(ContentHubType type) {
     this.type = type;
@@ -17,5 +17,4 @@ public enum BynderContentHubType {
   public ContentHubType getType() {
     return type;
   }
-
 }

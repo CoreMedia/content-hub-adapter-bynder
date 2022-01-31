@@ -10,9 +10,9 @@ If a project is inactive it means that the development has been discontinued and
 # Content Hub Adapter for Bynder
 
 The **content-hub-adapter-bynder** extension is providing access to Bynder content via configuration. 
-Bynder content is available as an additional tree inside the CoreMedia Studio after a successful configuration of the content-hub-adapter.
+Bynder content is available as an additional tree inside the CoreMedia Studio after a successful configuration of the content hub adapter.
 
-The  types of content working with this adapter are:
+The types of content working with this adapter are:
 - Images
 - Videos
 

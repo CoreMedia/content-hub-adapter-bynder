@@ -9,9 +9,7 @@ import com.coremedia.labs.contenthub.adapters.bynder.service.model.Video;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,8 +47,6 @@ public class BynderVideoItem extends BynderItem {
       blob = new UrlBlobBuilder(this, "preview").withUrl(thumbnailUrl).build();
     }
 
-    Duration videoDuration = Duration.ofSeconds(getVideo().getDuration());
-
     return List.of(
             // Details
             new DetailsSection("main", List.of(
@@ -60,8 +56,6 @@ public class BynderVideoItem extends BynderItem {
             // Metadata
             new DetailsSection("metadata", List.of(
                     new DetailsElement<>("id", video.getId()),
-                    new DetailsElement<>("type", getVideo().getType()),
-                    new DetailsElement<>("duration", DurationFormatUtils.formatDuration(videoDuration.toMillis(), "H:mm:ss", true)),
                     new DetailsElement<>("user", video.getUser())
             ))
     );
@@ -69,12 +63,12 @@ public class BynderVideoItem extends BynderItem {
 
   @Override
   public String getThumbnailUrl() {
-    return String.format("https://i.vimeocdn.com/video/%s_640x360.jpg", video.getPictureId());
+    return video.getThumbnails().getUrl();
   }
 
   @Override
   public String getDataUrl() {
-    return video.getVideos().getLarge().getUrl();
+    return video.getVideoPreviewURL();
   }
 
   @Override
@@ -85,5 +79,4 @@ public class BynderVideoItem extends BynderItem {
   public Video getVideo() {
     return video;
   }
-
 }

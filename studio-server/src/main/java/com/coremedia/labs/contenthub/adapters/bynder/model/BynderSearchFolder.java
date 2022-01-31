@@ -20,5 +20,4 @@ public class BynderSearchFolder extends BynderFolder {
   public void setQuery(SearchQuery query) {
     this.query = query;
   }
-
 }

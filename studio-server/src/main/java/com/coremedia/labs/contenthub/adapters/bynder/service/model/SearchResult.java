@@ -8,40 +8,29 @@ import java.util.List;
 public class SearchResult<T> {
 
   @JsonProperty("total")
-  private int total;
+  private Count total;
 
-  @JsonProperty("totalHits")
-  private int totalHits;
-
-  @JsonProperty("hits")
-  private List<T> hits;
+  @JsonProperty("media")
+  private List<T> media;
 
   public SearchResult() {
-    this.hits = new ArrayList<>();
+    this.media = new ArrayList<>();
   }
 
-  public int getTotal() {
+  public Count getTotal() {
     return total;
   }
 
-  public void setTotal(int total) {
+  public void setTotal(Count total) {
     this.total = total;
   }
 
-  public int getTotalHits() {
-    return totalHits;
+  public List<T> getMedia() {
+    return media;
   }
 
-  public void setTotalHits(int totalHits) {
-    this.totalHits = totalHits;
-  }
-
-  public List<T> getHits() {
-    return hits;
-  }
-
-  public void setHits(List<T> hits) {
-    this.hits = hits;
+  public void setMedia(List<T> media) {
+    this.media = media;
   }
 
 }

@@ -29,16 +29,14 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
   private final BynderService bynderService;
 
   private final BynderFolder rootFolder;
-  private final BynderFolder imagesRootFolder;
-  private final BynderFolder videosRootFolder;
 
   public BynderContentHubAdapter(BynderContentHubSettings settings, String connectionId) {
     this.settings = settings;
     this.connectionId = connectionId;
 
     rootFolder = new BynderFolder(new ContentHubObjectId(connectionId, "root"), settings.getDisplayName(), BynderContentHubType.FOLDER);
-    imagesRootFolder = new BynderSearchFolder(new ContentHubObjectId(connectionId, "images"), "Images", PhotoSearchQuery.queryForTerm("*"), BynderContentHubType.IMAGE);
-    videosRootFolder = new BynderSearchFolder(new ContentHubObjectId(connectionId, "video"), "Videos", VideoSearchQuery.queryForTerm("*"), BynderContentHubType.VIDEO);
+    BynderFolder imagesRootFolder = new BynderSearchFolder(new ContentHubObjectId(connectionId, "images"), "Images", ImageSearchQuery.queryForTerm("*"), BynderContentHubType.IMAGE);
+    BynderFolder videosRootFolder = new BynderSearchFolder(new ContentHubObjectId(connectionId, "video"), "Videos", VideoSearchQuery.queryForTerm("*"), BynderContentHubType.VIDEO);
 
     rootFolder.addSubfolder(imagesRootFolder);
     rootFolder.addSubfolder(videosRootFolder);
@@ -78,22 +76,24 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
 
     try {
       if (rootFolder == folder) {
-        items = bynderService.searchPhotos(PhotoSearchQuery.queryForTerm("*").withSafeSearch(settings.isSafeSearch())).getHits()
+        items = bynderService.searchPhotos(ImageSearchQuery.queryForTerm("*")).getMedia()
                 .stream()
-                .map(this::createPhotoItem)
+                .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
                 .collect(Collectors.toUnmodifiableList());
       } else if (folder instanceof BynderSearchFolder) {
         BynderSearchFolder searchFolder = (BynderSearchFolder) folder;
         SearchQuery query = searchFolder.getQuery();
 
-        if (query instanceof PhotoSearchQuery) {
-          items = bynderService.searchPhotos((PhotoSearchQuery) query).getHits()
-                  .stream().map(this::createPhotoItem)
+        if (query instanceof ImageSearchQuery) {
+          items = bynderService.searchPhotos((ImageSearchQuery) query).getMedia()
+                  .stream()
+                  .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
                   .collect(Collectors.toUnmodifiableList());
         } else if (query instanceof VideoSearchQuery) {
           bynderService.searchVideos((VideoSearchQuery) query);
-          items = bynderService.searchVideos((VideoSearchQuery) query).getHits()
-                  .stream().map(this::createVideoItem)
+          items = bynderService.searchVideos((VideoSearchQuery) query).getMedia()
+                  .stream()
+                  .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
                   .collect(Collectors.toUnmodifiableList());
         }
       }
@@ -107,16 +107,9 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
   @Nullable
   @Override
   public Item getItem(ContentHubContext context, ContentHubObjectId id) throws ContentHubException {
-    Item result = null;
-    String[] externalId = id.getExternalId().split("-");
-    if (externalId.length == 2) {
-      if ("photo".equals(externalId[0])) {
-        result = Optional.ofNullable(bynderService.getPhotoById(Integer.parseInt(externalId[1]))).map(this::createPhotoItem).orElse(null);
-      } else if ("video".equals(externalId[0])) {
-        result = Optional.ofNullable(bynderService.getVideoById(Integer.parseInt(externalId[1]))).map(this::createVideoItem).orElse(null);
-      }
-    }
-    return result;
+    return Optional.ofNullable(bynderService.getAssetById(id.getExternalId()))
+            .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
+            .orElse(null);
   }
 
   @Override
@@ -171,28 +164,28 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
       }
     }
 
-    // Photo Search
+    // Image Search
     if (BynderContentHubType.IMAGE.getType().equals(type)) {
-      SearchResult<Photo> searchResult;
+      SearchResult<Image> searchResult;
 
       if (entityId > 0) {
-        searchResult = bynderService.searchPhotos(PhotoSearchQuery.queryForId(entityId));
+        searchResult = bynderService.searchPhotos(ImageSearchQuery.queryForId(entityId));
 
       } else if (belowFolder instanceof BynderSearchFolder) {
         BynderSearchFolder belowSearchFolder = (BynderSearchFolder) belowFolder;
-        PhotoSearchQuery sq = PhotoSearchQuery.fromQuery((PhotoSearchQuery) belowSearchFolder.getQuery());
+        ImageSearchQuery sq = ImageSearchQuery.fromQuery((ImageSearchQuery) belowSearchFolder.getQuery());
         sq.withTerm(query);
         searchResult = bynderService.searchPhotos(sq);
 
       } else {
-        searchResult = bynderService.searchPhotos(query, settings.isSafeSearch(), 1, limit);
+        searchResult = bynderService.searchPhotos(query, 1, limit);
       }
 
-      if (searchResult != null && searchResult.getHits() != null) {
+      if (searchResult != null && searchResult.getMedia() != null) {
         result = new ContentHubSearchResult(
-                searchResult.getHits()
+                searchResult.getMedia()
                         .stream()
-                        .map(this::createPhotoItem)
+                        .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
                         .collect(Collectors.toUnmodifiableList()));
       }
 
@@ -210,14 +203,14 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
         searchResult = bynderService.searchVideos(sq);
 
       } else {
-        searchResult = bynderService.searchVideos(query, settings.isSafeSearch(), 1, limit);
+        searchResult = bynderService.searchVideos(query, 1, limit);
       }
 
-      if (searchResult != null && searchResult.getHits() != null) {
+      if (searchResult != null && searchResult.getMedia() != null) {
         result = new ContentHubSearchResult(
-                searchResult.getHits()
+                searchResult.getMedia()
                         .stream()
-                        .map(this::createVideoItem)
+                        .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
                         .collect(Collectors.toUnmodifiableList()));
       }
     }
@@ -233,18 +226,5 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
   @Override
   public Collection<ContentHubType> supportedTypes() {
     return SEARCH_TYPES;
-  }
-
-
-  // --- INTERNAL ------------------------------------------------------------------------------------------------------
-
-  private BynderPhotoItem createPhotoItem(@NonNull Photo photo) {
-    ContentHubObjectId hubId = new ContentHubObjectId(connectionId, "photo-" + photo.getId());
-    return new BynderPhotoItem(hubId, photo);
-  }
-
-  private BynderVideoItem createVideoItem(@NonNull Video video) {
-    ContentHubObjectId hubId = new ContentHubObjectId(connectionId, "video-" + video.getId());
-    return new BynderVideoItem(hubId, video);
   }
 }

@@ -1,7 +1,7 @@
 package com.coremedia.labs.contenthub.adapters.bynder;
 
 import com.coremedia.labs.contenthub.adapters.bynder.model.BynderItem;
-import com.coremedia.labs.contenthub.adapters.bynder.model.BynderPhotoItem;
+import com.coremedia.labs.contenthub.adapters.bynder.model.BynderImageItem;
 import com.coremedia.labs.contenthub.adapters.bynder.model.BynderVideoItem;
 import com.coremedia.contenthub.api.ContentHubAdapter;
 import com.coremedia.contenthub.api.ContentHubBlob;
@@ -37,7 +37,7 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
     contentModel.put("title", item.getName());
     contentModel.put("copyright", item.getCopyright() );
 
-    if (item instanceof BynderPhotoItem) {
+    if (item instanceof BynderImageItem) {
       ContentHubBlob blob = item.getBlob("file");
       if (blob != null) {
         contentModel.put("data", blob);
@@ -66,11 +66,11 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
     }
 
     String imageUrl = (String) data;
-    String imageName = reference.getOwner().getContentName() + " (Thumbnail)";
+    String imageName = reference.getOwner().getContentName() + " (Thumbnails)";
 
     ContentModel referenceModel = ContentModel.createReferenceModel(imageName, reference.getCoreMediaContentType());
     referenceModel.put("data", new UrlBlobBuilder(owner, "thumbnail").withUrl(imageUrl).build());
-    referenceModel.put("title", "Video Thumbnail " + imageName);
+    referenceModel.put("title", "Video Thumbnails " + imageName);
 
     return referenceModel;
   }

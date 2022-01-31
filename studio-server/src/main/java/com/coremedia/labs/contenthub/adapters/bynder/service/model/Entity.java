@@ -1,11 +1,21 @@
 package com.coremedia.labs.contenthub.adapters.bynder.service.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Image.class, name = Image.TYPE),
+        @JsonSubTypes.Type(value = Video.class, name = Video.TYPE)
+})
 public abstract class Entity {
 
   @JsonProperty("id")
-  private int id;
+  private String id;
 
   @JsonProperty("name")
   private String name;
@@ -19,11 +29,17 @@ public abstract class Entity {
   @JsonProperty("description")
   private String description;
 
-  public int getId() {
+  @JsonProperty("thumbnails")
+  private Thumbnails thumbnails;
+
+  @JsonProperty("fileSize")
+  private int fileSize;
+
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -57,5 +73,21 @@ public abstract class Entity {
 
   public void setUser(String user) {
     this.user = user;
+  }
+
+  public Thumbnails getThumbnails() {
+    return thumbnails;
+  }
+
+  public void setThumbnails(Thumbnails thumbnails) {
+    this.thumbnails = thumbnails;
+  }
+
+  public int getFileSize() {
+    return fileSize;
+  }
+
+  public void setFileSize(int fileSize) {
+    this.fileSize = fileSize;
   }
 }

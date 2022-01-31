@@ -18,10 +18,6 @@ public class VideoSearchQuery extends SearchQuery {
     VideoSearchQuery searchQuery = new VideoSearchQuery();
     searchQuery.term = originalQuery.getTerm();
     searchQuery.id = originalQuery.getId();
-    searchQuery.isEditorsChoice = originalQuery.isEditorsChoice();
-    searchQuery.isSafeSearch = originalQuery.isSafeSearch();
-    searchQuery.minWidth = originalQuery.getMinWidth();
-    searchQuery.minHeight = originalQuery.getMinHeight();
     return searchQuery;
   }
 
@@ -37,25 +33,7 @@ public class VideoSearchQuery extends SearchQuery {
     return this;
   }
 
-  public VideoSearchQuery withMinWidth(int minWidth) {
-    assert minWidth >= 0;
-    this.minWidth = minWidth;
-    return this;
-  }
-
-  public VideoSearchQuery withMinHeight(int minHeight) {
-    assert minHeight >= 0;
-    this.minHeight = minHeight;
-    return this;
-  }
-
-  public VideoSearchQuery withEditorsChoice(boolean value) {
-    this.isEditorsChoice = value;
-    return this;
-  }
-
-  public VideoSearchQuery withSafeSearch(boolean value) {
-    this.isSafeSearch = value;
-    return this;
+  public String getType() {
+    return Video.TYPE;
   }
 }

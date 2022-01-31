@@ -16,7 +16,7 @@ import java.util.List;
 
 public abstract class BynderItem extends BynderContentHubObject implements Item {
 
-  private BynderContentHubType type;
+  private final BynderContentHubType type;
 
   public BynderItem(@NonNull ContentHubObjectId objectId, BynderContentHubType type) {
     super(objectId);

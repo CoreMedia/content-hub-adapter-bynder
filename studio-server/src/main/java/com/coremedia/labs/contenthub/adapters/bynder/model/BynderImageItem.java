@@ -5,7 +5,7 @@ import com.coremedia.contenthub.api.ContentHubObjectId;
 import com.coremedia.contenthub.api.UrlBlobBuilder;
 import com.coremedia.contenthub.api.preview.DetailsElement;
 import com.coremedia.contenthub.api.preview.DetailsSection;
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.Photo;
+import com.coremedia.labs.contenthub.adapters.bynder.service.model.Image;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.io.FileUtils;
@@ -14,13 +14,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class BynderPhotoItem extends BynderItem {
+public class BynderImageItem extends BynderItem {
 
-  private final Photo photo;
+  private final Image image;
 
-  public BynderPhotoItem(@NonNull ContentHubObjectId objectId, @NonNull Photo photo) {
+  public BynderImageItem(@NonNull ContentHubObjectId objectId, @NonNull Image image) {
     super(objectId, BynderContentHubType.IMAGE);
-    this.photo = photo;
+    this.image = image;
   }
 
   @Override
@@ -30,13 +30,13 @@ public class BynderPhotoItem extends BynderItem {
 
   @Override
   public String getName() {
-    return photo.getName();
+    return image.getName();
   }
 
   @Nullable
   @Override
   public String getDescription() {
-    return photo.getDescription();
+    return image.getDescription();
   }
 
   @NonNull
@@ -56,30 +56,30 @@ public class BynderPhotoItem extends BynderItem {
 
             // Metadata
             new DetailsSection("metadata", List.of(
-                    new DetailsElement<>("id", photo.getId()),
-                    new DetailsElement<>("dimensions", String.format("%dx%d", photo.getImageWidth(), photo.getImageHeight())),
-                    new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(photo.getImageSize())),
-                    new DetailsElement<>("user", photo.getUser())
+                    new DetailsElement<>("id", image.getId()),
+                    new DetailsElement<>("dimensions", String.format("%dx%d", image.getWidth(), image.getHeight())),
+                    new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(image.getFileSize())),
+                    new DetailsElement<>("user", image.getUser())
             ))
     );
   }
 
   @Override
   public String getThumbnailUrl() {
-    return getPhoto().getPreviewUrl();
+    return getPhoto().getThumbnails().getUrl();
   }
 
   @Override
   public String getDataUrl() {
-    return getPhoto().getLargeImageUrl();
+    return getPhoto().getTransformBaseUrl();
   }
 
   @Override
   public String getCopyright() {
-    return photo.getCopyright();
+    return image.getCopyright();
   }
 
-  public Photo getPhoto() {
-    return photo;
+  public Image getPhoto() {
+    return image;
   }
 }

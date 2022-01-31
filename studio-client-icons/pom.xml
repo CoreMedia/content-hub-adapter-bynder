@@ -15,7 +15,7 @@
     <sencha.target>${project.build.directory}/packages/${project.groupId}__${project.artifactId}</sencha.target>
     <icon.unpack.dir>${project.build.directory}/unpacked-iconfont</icon.unpack.dir>
     <jangaroo.version>4.0.76</jangaroo.version>
-    <studio-client.version>2101.1</studio-client.version>
+    <studio-client.version>2104.1</studio-client.version>
   </properties>
 
   <dependencyManagement>

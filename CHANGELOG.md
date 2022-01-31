@@ -6,4 +6,4 @@ Changelog
 
 ### Initial Release 🥳
 
-Basic implementation of the Content Hub API for Bynder.
+Basic implementation of the Content Hub Adapter for Bynder.

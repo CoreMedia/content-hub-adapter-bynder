@@ -1,15 +1,11 @@
 package com.coremedia.blueprint.contenthub.adapters.bynder.service;
 
 import com.coremedia.labs.contenthub.adapters.bynder.service.BynderService;
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.Photo;
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.PhotoSearchQuery;
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchResult;
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.Video;
+import com.coremedia.labs.contenthub.adapters.bynder.service.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class BynderServiceIT {
 
@@ -17,46 +13,42 @@ public class BynderServiceIT {
 
   @Before
   public void setUp() {
-    testling = new BynderService("https://coremedia-sandbox.bynder.com/",
+    testling = new BynderService("https://coremedia-sandbox.bynder.com/api/v4/",
             "7408c90ddc23f69504d46dd84f60791830d6befcee828797a4972f432ff53dd9");
   }
 
   @Test
   public void testSearchPhotos() {
-    SearchResult<Photo> hits = testling.searchPhotos("look");
+    SearchResult<Image> hits = testling.searchPhotos("summer");
     assertNotNull(hits);
   }
 
   @Test
   public void testGetPhotoById() {
-    int photoId = 4916080;
-    Photo photo = testling.getPhotoById(photoId);
-    assertNotNull(photo);
-    assertEquals(photoId, photo.getId());
+    String photoId = "CE6BAF80-5404-41BF-A7649A0339AAEE34";
+    Entity asset = testling.getAssetById(photoId);
+    assertTrue(asset instanceof Image);
+    assertEquals(photoId, asset.getId());
   }
 
   @Test
   public void testSearchVideos() {
-    SearchResult<Video> hits = testling.searchVideos("fashion");
+    SearchResult<Video> hits = testling.searchVideos("summer");
     assertNotNull(hits);
   }
 
   @Test
   public void testGetVideoById() {
-    int videoId = 31377;
-    Video video = testling.getVideoById(videoId);
-    assertNotNull(video);
-    assertEquals(videoId, video.getId());
+    String videoId = "1ACAEEA0-3B12-42D0-A9AB42377C220DDA";
+    Entity asset = testling.getAssetById(videoId);
+    assertTrue(asset instanceof Video);
+    assertEquals(videoId, asset.getId());
   }
 
   @Test
   public void testSearchWithQuery() {
-    PhotoSearchQuery query = PhotoSearchQuery.queryForTerm("beauty")
-            .withEditorsChoice(false)
-            .withSafeSearch(false)
-            .withMinWidth(800)
-            .withMinHeight(600);
-    SearchResult<Photo> results = testling.searchPhotos(query);
+    ImageSearchQuery query = ImageSearchQuery.queryForTerm("summer");
+    SearchResult<Image> results = testling.searchPhotos(query);
     assertNotNull(results);
   }
 }

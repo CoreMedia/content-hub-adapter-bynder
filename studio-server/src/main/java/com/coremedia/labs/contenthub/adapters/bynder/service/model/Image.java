@@ -2,12 +2,12 @@ package com.coremedia.labs.contenthub.adapters.bynder.service.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Video extends Entity {
+public class Image extends Entity {
 
-  public static final String TYPE = "video";
+  public static final String TYPE = "image";
 
-  @JsonProperty("videoPreviewURLs")
-  private String[] urls;
+  @JsonProperty("transformBaseUrl")
+  private String transformBaseUrl;
 
   @JsonProperty("width")
   private int width;
@@ -15,16 +15,12 @@ public class Video extends Entity {
   @JsonProperty("height")
   private int height;
 
-  public String getVideoPreviewURL() {
-    if (urls != null && urls.length > 0) {
-      return urls[0];
-    } else {
-      return "";
-    }
+  public String getTransformBaseUrl() {
+    return transformBaseUrl;
   }
 
-  public void setVideoPreviewUrls(String[] urls) {
-    this.urls = urls;
+  public void setTransformBaseUrl(String transformBaseUrl) {
+    this.transformBaseUrl = transformBaseUrl;
   }
 
   public int getWidth() {
@@ -41,5 +37,9 @@ public class Video extends Entity {
 
   public void setHeight(int height) {
     this.height = height;
+  }
+
+  public enum Orientation {
+    landscape, portrait, square
   }
 }
