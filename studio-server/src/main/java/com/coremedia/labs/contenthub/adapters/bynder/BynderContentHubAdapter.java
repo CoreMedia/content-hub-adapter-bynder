@@ -35,7 +35,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
     this.connectionId = connectionId;
 
     rootFolder = new BynderFolder(new ContentHubObjectId(connectionId, "root"), settings.getDisplayName(), BynderContentHubType.FOLDER);
-    BynderFolder imagesRootFolder = new BynderSearchFolder(new ContentHubObjectId(connectionId, "images"), "Images", ImageSearchQuery.queryForTerm("*"), BynderContentHubType.IMAGE);
+    BynderFolder imagesRootFolder = new BynderSearchFolder(new ContentHubObjectId(connectionId, "image"), "Images", ImageSearchQuery.queryForTerm("*"), BynderContentHubType.IMAGE);
     BynderFolder videosRootFolder = new BynderSearchFolder(new ContentHubObjectId(connectionId, "video"), "Videos", VideoSearchQuery.queryForTerm("*"), BynderContentHubType.VIDEO);
 
     rootFolder.addSubfolder(imagesRootFolder);

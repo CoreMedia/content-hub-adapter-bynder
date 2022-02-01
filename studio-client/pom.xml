@@ -75,8 +75,6 @@
 
   <build>
 
-    <sourceDirectory>src/main/joo</sourceDirectory>
-
     <plugins>
       <plugin>
         <groupId>net.jangaroo</groupId>
@@ -89,31 +87,9 @@
               <uri>exml:com.coremedia.labs.plugins.contenthub.bynder.config</uri>
             </namespace>
           </namespaces>
-          <jooJettyPort>${jooJettyPort}</jooJettyPort>
-          <jooProxyPathSpec>${jooProxyPathSpec}</jooProxyPathSpec>
-          <jooProxyTargetUri>${jooProxyTargetUri}</jooProxyTargetUri>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>remote-studio-server</id>
-      <!--
-       | This profile will be activated if you set -Dinstallation.host=<FQDN> on your command-line. The jangaroo-plugin
-       | proxy servlet will then route all requests to the defined remote studio rest service
-       | (except these for your local package(s)) and automatically add your local package(s) to the
-       | dynamic-packages.json from that remote location, so that your Studio Client Plugin will be loaded.
-       -->
-      <activation>
-        <property>
-          <name>installation.host</name>
-        </property>
-      </activation>
-      <properties>
-        <jooProxyTargetUri>https://studio.${installation.host}</jooProxyTargetUri>
-      </properties>
-    </profile>
-  </profiles>
 </project>

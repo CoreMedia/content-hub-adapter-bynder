@@ -13,5 +13,4 @@ public class BynderContentHubAdapterConfiguration {
   public ContentHubAdapterFactory<BynderContentHubSettings> bynderContentHubAdapterFactory() {
     return new BynderContentHubAdapterFactory();
   }
-
 }
