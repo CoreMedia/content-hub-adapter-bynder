@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.coremedia.labs.contenthub.adapters.bynder.configuration.BynderContentHubAdapterConfiguration
