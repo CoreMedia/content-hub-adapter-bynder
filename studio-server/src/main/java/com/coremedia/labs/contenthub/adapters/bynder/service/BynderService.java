@@ -24,8 +24,6 @@ public class BynderService {
 
   private static final Logger LOG = LoggerFactory.getLogger(BynderService.class);
 
-  private static final String DEFAULT_API_ENDPOINT = "https://bynder.com/api/v4/";
-
   // Query parameter names
   private static final String QUERY = "keyword";
   private static final String ID = "id";
@@ -44,15 +42,11 @@ public class BynderService {
 
   private final RestTemplate restTemplate;
   private final String apiEndpoint;
-  private final String apiKey;
+  private final String accessToken;
 
-  public BynderService(@NonNull String apiKey) {
-    this(DEFAULT_API_ENDPOINT, apiKey);
-  }
-
-  public BynderService(@NonNull String apiEndpoint, @NonNull String apiKey) {
+  public BynderService(@NonNull String apiEndpoint, @NonNull String accessToken) {
     this.apiEndpoint = apiEndpoint;
-    this.apiKey = apiKey;
+    this.accessToken = accessToken;
     this.restTemplate = new RestTemplate();
   }
 
@@ -200,7 +194,7 @@ public class BynderService {
 
     // Build headers
     HttpHeaders headers = new HttpHeaders();
-    headers.add(HttpHeaders.AUTHORIZATION, BEARER_HEADER_KEY + apiKey);
+    headers.add(HttpHeaders.AUTHORIZATION, BEARER_HEADER_KEY + accessToken);
 
     // Build request entity
     HttpEntity<String> entity = new HttpEntity<>(null, headers);

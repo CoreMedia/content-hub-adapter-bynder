@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>com.coremedia.blueprint.contenthub</groupId>
-  <artifactId>studio-server.content-hub-adapter-dropbox</artifactId>
+  <artifactId>studio-server.content-hub-adapter-bynder</artifactId>
 
   <properties>
     <coremedia.project.extension.for>studio-lib</coremedia.project.extension.for>

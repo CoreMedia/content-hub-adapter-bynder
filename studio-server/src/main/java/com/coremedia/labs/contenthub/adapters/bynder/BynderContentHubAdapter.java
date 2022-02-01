@@ -41,7 +41,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
     rootFolder.addSubfolder(imagesRootFolder);
     rootFolder.addSubfolder(videosRootFolder);
 
-    bynderService = new BynderService(settings.getApiKey());
+    bynderService = new BynderService(settings.getApiEndpoint(), settings.getAccessToken());
   }
 
   // --- ContentHubAdapter ---------------------------------------------------------------------------------------------
