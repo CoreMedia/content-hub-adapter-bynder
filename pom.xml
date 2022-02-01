@@ -10,7 +10,7 @@
   <modules>
     <module>plugin-descriptor</module>
     <module>studio-client</module>
-    <module>studio-client-icons</module>
+    <!-- may re-enable with CMCC 11 <module>studio-client-icons</module> -->
     <module>studio-server</module>
   </modules>
 
