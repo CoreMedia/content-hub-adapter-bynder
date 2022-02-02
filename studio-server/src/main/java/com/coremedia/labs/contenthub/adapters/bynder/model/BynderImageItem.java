@@ -51,7 +51,9 @@ public class BynderImageItem extends BynderItem {
     return List.of(
             // Details
             new DetailsSection("main", List.of(
-                    new DetailsElement<>(getName(), false, Objects.requireNonNullElse(blob, SHOW_TYPE_ICON))
+                    new DetailsElement<>(getName(), false, Objects.requireNonNullElse(blob, SHOW_TYPE_ICON)),
+                    new DetailsElement<>("copyright", image.getCopyright()),
+                    new DetailsElement<>("description", image.getDescription())
             ), false, false, false),
 
             // Metadata
@@ -59,27 +61,27 @@ public class BynderImageItem extends BynderItem {
                     new DetailsElement<>("id", image.getId()),
                     new DetailsElement<>("dimensions", String.format("%dx%d", image.getWidth(), image.getHeight())),
                     new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(image.getFileSize())),
-                    new DetailsElement<>("user", image.getUser())
+                    new DetailsElement<>("user", image.getUserCreated()),
+                    new DetailsElement<>("tags", image.getTags() != null ? String.join(", ", image.getTags()) : "-"),
+                    new DetailsElement<>("dateCreated", getDateFormatted(image.getDateCreated())),
+                    new DetailsElement<>("dateModified", getDateFormatted(image.getDateModified())),
+                    new DetailsElement<>("datePublished", getDateFormatted(image.getDatePublished()))
             ))
     );
   }
 
   @Override
   public String getThumbnailUrl() {
-    return getPhoto().getThumbnails().getUrl();
+    return image.getThumbnails().getUrl();
   }
 
   @Override
   public String getDataUrl() {
-    return getPhoto().getTransformBaseUrl();
+    return image.getTransformBaseUrl();
   }
 
   @Override
   public String getCopyright() {
     return image.getCopyright();
-  }
-
-  public Image getPhoto() {
-    return image;
   }
 }

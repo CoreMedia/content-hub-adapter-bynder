@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.util.Date;
+import java.util.List;
+
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type"
@@ -20,9 +23,6 @@ public abstract class Entity {
   @JsonProperty("name")
   private String name;
 
-  @JsonProperty("user")
-  private String user;
-
   @JsonProperty("copyright")
   private String copyright;
 
@@ -34,6 +34,21 @@ public abstract class Entity {
 
   @JsonProperty("fileSize")
   private int fileSize;
+
+  @JsonProperty("tags")
+  private List<String> tags;
+
+  @JsonProperty("dateModified")
+  private Date dateModified;
+
+  @JsonProperty("datePublished")
+  private Date datePublished;
+
+  @JsonProperty("dateCreated")
+  private Date dateCreated;
+
+  @JsonProperty("userCreated")
+  private String userCreated;
 
   public String getId() {
     return id;
@@ -67,14 +82,6 @@ public abstract class Entity {
     this.description = description;
   }
 
-  public String getUser() {
-    return user;
-  }
-
-  public void setUser(String user) {
-    this.user = user;
-  }
-
   public Thumbnails getThumbnails() {
     return thumbnails;
   }
@@ -89,5 +96,45 @@ public abstract class Entity {
 
   public void setFileSize(int fileSize) {
     this.fileSize = fileSize;
+  }
+
+  public List<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = tags;
+  }
+
+  public Date getDateModified() {
+    return dateModified;
+  }
+
+  public void setDateModified(Date dateModified) {
+    this.dateModified = dateModified;
+  }
+
+  public Date getDatePublished() {
+    return datePublished;
+  }
+
+  public void setDatePublished(Date datePublished) {
+    this.datePublished = datePublished;
+  }
+
+  public Date getDateCreated() {
+    return dateCreated;
+  }
+
+  public void setDateCreated(Date dateCreated) {
+    this.dateCreated = dateCreated;
+  }
+
+  public String getUserCreated() {
+    return userCreated;
+  }
+
+  public void setUserCreated(String userCreated) {
+    this.userCreated = userCreated;
   }
 }

@@ -1,20 +1,18 @@
 package com.coremedia.labs.contenthub.adapters.bynder.model;
 
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.Entity;
-import com.coremedia.contenthub.api.ContentHubBlob;
-import com.coremedia.contenthub.api.ContentHubObjectId;
-import com.coremedia.contenthub.api.ContentHubType;
-import com.coremedia.contenthub.api.Item;
-import com.coremedia.contenthub.api.UrlBlobBuilder;
-import com.coremedia.contenthub.api.preview.DetailsElement;
-import com.coremedia.contenthub.api.preview.DetailsSection;
+import com.coremedia.contenthub.api.*;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.text.DateFormat;
+import java.util.Date;
 
 public abstract class BynderItem extends BynderContentHubObject implements Item {
+
+  private static final Logger LOG = LoggerFactory.getLogger(BynderItem.class);
 
   private final BynderContentHubType type;
 
@@ -53,5 +51,14 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
     }
 
     return blob;
+  }
+
+  protected String getDateFormatted(Date date) {
+    try {
+      return DateFormat.getInstance().format(date);
+    } catch (Exception e) {
+      LOG.error("cannot format date {}", date);
+    }
+    return "-";
   }
 }

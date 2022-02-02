@@ -8,6 +8,7 @@ import com.coremedia.contenthub.api.preview.DetailsSection;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.Video;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -50,13 +51,20 @@ public class BynderVideoItem extends BynderItem {
     return List.of(
             // Details
             new DetailsSection("main", List.of(
-                    new DetailsElement<>(getName(), false, Objects.requireNonNullElse(blob, SHOW_TYPE_ICON))
+                    new DetailsElement<>(getName(), false, Objects.requireNonNullElse(blob, SHOW_TYPE_ICON)),
+                    new DetailsElement<>("copyright", video.getCopyright()),
+                    new DetailsElement<>("description", video.getDescription())
             ), false, false, false),
 
             // Metadata
             new DetailsSection("metadata", List.of(
                     new DetailsElement<>("id", video.getId()),
-                    new DetailsElement<>("user", video.getUser())
+                    new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(video.getFileSize())),
+                    new DetailsElement<>("user", video.getUserCreated()),
+                    new DetailsElement<>("tags", video.getTags() != null ? String.join(", ", video.getTags()) : "-"),
+                    new DetailsElement<>("dateCreated", getDateFormatted(video.getDateCreated())),
+                    new DetailsElement<>("dateModified", getDateFormatted(video.getDateModified())),
+                    new DetailsElement<>("datePublished", getDateFormatted(video.getDatePublished()))
             ))
     );
   }
@@ -74,9 +82,5 @@ public class BynderVideoItem extends BynderItem {
   @Override
   public String getCopyright() {
     return video.getCopyright();
-  }
-
-  public Video getVideo() {
-    return video;
   }
 }
