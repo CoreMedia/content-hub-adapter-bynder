@@ -9,8 +9,8 @@
     <relativePath>../../../../apps/studio-client/modules/extensions/pom.xml</relativePath>
   </parent>
 
-  <groupId>com.coremedia.blueprint.contenthub</groupId>
-  <artifactId>studio-client.content-hub-adapter-bynder</artifactId>
+  <groupId>com.coremedia.blueprint.content-hub</groupId>
+  <artifactId>content-hub-adapter-bynder-studio-plugin</artifactId>
   <packaging>swc</packaging>
 
   <properties>
@@ -38,28 +38,24 @@
       <groupId>com.coremedia.blueprint.base</groupId>
       <artifactId>bpbase-studio-components</artifactId>
       <type>swc</type>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.coremedia.ui.toolkit</groupId>
       <artifactId>ui-components</artifactId>
       <type>swc</type>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.coremedia.ui.sdk</groupId>
       <artifactId>editor-components</artifactId>
       <type>swc</type>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.coremedia.ui.sdk</groupId>
       <artifactId>content-hub-editor-components</artifactId>
       <type>swc</type>
-      <scope>provided</scope>
     </dependency>
 
     <!-- JANGAROO dependencies -->
@@ -68,7 +64,6 @@
       <groupId>net.jangaroo</groupId>
       <artifactId>ext-as</artifactId>
       <type>swc</type>
-      <scope>provided</scope>
     </dependency>
 
   </dependencies>

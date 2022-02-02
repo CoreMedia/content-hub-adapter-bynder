@@ -2,7 +2,7 @@
   "studioPlugins": [
     {
       "mainClass": "com.coremedia.labs.plugins.contenthub.bynder.ContentHubBynderStudioPlugin",
-      "name": "Content Hub - Bynder"
+      "name": "Content Hub Bynder"
     }
   ]
 }

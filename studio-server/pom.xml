@@ -10,8 +10,8 @@
     <relativePath>../../../../apps/studio-server/modules/extensions/pom.xml</relativePath>
   </parent>
 
-  <groupId>com.coremedia.blueprint.contenthub</groupId>
-  <artifactId>studio-server.content-hub-adapter-bynder</artifactId>
+  <groupId>com.coremedia.blueprint.content-hub</groupId>
+  <artifactId>content-hub-adapter-bynder-studio-server</artifactId>
 
   <properties>
     <coremedia.project.extension.for>studio-lib</coremedia.project.extension.for>
