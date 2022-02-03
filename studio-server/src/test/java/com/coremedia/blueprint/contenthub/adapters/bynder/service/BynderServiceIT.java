@@ -1,5 +1,6 @@
 package com.coremedia.blueprint.contenthub.adapters.bynder.service;
 
+import com.coremedia.labs.contenthub.adapters.bynder.model.BynderContentHubType;
 import com.coremedia.labs.contenthub.adapters.bynder.service.BynderService;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.*;
 import org.junit.Before;
@@ -18,23 +19,29 @@ public class BynderServiceIT {
   }
 
   @Test
-  public void testSearchPhotos() {
-    SearchResult<Image> hits = testling.searchPhotos("summer");
+  public void testSearchImages() {
+    SearchQuery searchQuery = SearchQuery.queryForTerm("summer").withType(BynderContentHubType.IMAGE.getType());
+    SearchResult<Entity> hits = testling.search(searchQuery);
     assertNotNull(hits);
+    assertTrue(hits.getMedia().size() != 0);
+    assertTrue(hits.getMedia().get(0) instanceof Image);
   }
 
   @Test
-  public void testGetPhotoById() {
-    String photoId = "CE6BAF80-5404-41BF-A7649A0339AAEE34";
-    Entity asset = testling.getAssetById(photoId);
+  public void testGetImageById() {
+    String imageId = "CE6BAF80-5404-41BF-A7649A0339AAEE34";
+    Entity asset = testling.getAssetById(imageId);
     assertTrue(asset instanceof Image);
-    assertEquals(photoId, asset.getId());
+    assertEquals(imageId, asset.getId());
   }
 
   @Test
   public void testSearchVideos() {
-    SearchResult<Video> hits = testling.searchVideos("summer");
+    SearchQuery searchQuery = SearchQuery.queryForTerm("summer").withType(BynderContentHubType.VIDEO.getType());
+    SearchResult<Entity> hits = testling.search(searchQuery);
     assertNotNull(hits);
+    assertTrue(hits.getMedia().size() != 0);
+    assertTrue(hits.getMedia().get(0) instanceof Video);
   }
 
   @Test
@@ -43,12 +50,5 @@ public class BynderServiceIT {
     Entity asset = testling.getAssetById(videoId);
     assertTrue(asset instanceof Video);
     assertEquals(videoId, asset.getId());
-  }
-
-  @Test
-  public void testSearchWithQuery() {
-    ImageSearchQuery query = ImageSearchQuery.queryForTerm("summer");
-    SearchResult<Image> results = testling.searchPhotos(query);
-    assertNotNull(results);
   }
 }

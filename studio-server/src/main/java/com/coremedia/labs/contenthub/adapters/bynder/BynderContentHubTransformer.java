@@ -25,7 +25,7 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
 
   @Nullable
   @Override
-  public ContentModel transform(Item source, ContentHubAdapter contentHubAdapter, ContentHubContext contentHubContext) throws ContentHubContentCreationException {
+  public ContentModel transform(Item source, ContentHubAdapter contentHubAdapter, ContentHubContext contentHubContext) {
     if (!(source instanceof BynderItem)) {
       throw new IllegalArgumentException("Cannot transform source " + source);
     }
@@ -47,9 +47,9 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
       contentModel.put("dataUrl", videoItem.getDataUrl());
 
       // Store image reference
-      String thumbnailUrl = videoItem.getThumbnailUrl();
-      if (thumbnailUrl != null) {
-        ContentModelReference ref = ContentModelReference.create(contentModel, "CMPicture", thumbnailUrl);
+      String previewUrl = videoItem.getPreviewUrl();
+      if (previewUrl != null) {
+        ContentModelReference ref = ContentModelReference.create(contentModel, "CMPicture", previewUrl);
         contentModel.put("pictures", Collections.singletonList(ref));
       }
     }

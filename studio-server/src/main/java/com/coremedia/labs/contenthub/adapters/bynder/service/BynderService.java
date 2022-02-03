@@ -1,6 +1,10 @@
 package com.coremedia.labs.contenthub.adapters.bynder.service;
 
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.*;
+import com.coremedia.contenthub.api.ContentHubType;
+import com.coremedia.labs.contenthub.adapters.bynder.model.BynderContentHubType;
+import com.coremedia.labs.contenthub.adapters.bynder.service.model.Entity;
+import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchQuery;
+import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchResult;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,12 +35,15 @@ public class BynderService {
   private static final String LIMIT = "limit";
   private static final String PAGE = "page";
   private static final String TYPE = "type";
+  private static final String ORDER_BY = "orderBy";
 
   private static final int DEFAULT_PAGE = 1;
   private static final int DEFAULT_LIMIT = 20;
+  private static final String DEFAULT_ORDER_BY = "dateModified desc";
   private static final int MIN_PER_PAGE = 3;
   private static final int MAX_PER_PAGE = 200;
   private static final int QUERY_PARAM_VALUE_ACTIVE = 1;
+  private static final String WILDCARD_SEARCH = "*";
 
   private static final String BEARER_HEADER_KEY = "Bearer ";
 
@@ -49,8 +56,6 @@ public class BynderService {
     this.accessToken = accessToken;
     this.restTemplate = new RestTemplate();
   }
-
-  // --- COMMON (ALL ASSET TYPES)---------------------------------------------------------------------------------------
 
   /**
    * Retrieves a single asset.
@@ -72,99 +77,17 @@ public class BynderService {
     }
   }
 
-  // --- PHOTOS --------------------------------------------------------------------------------------------------------
-
-  public SearchResult<Image> searchPhotos(@NonNull String query) {
-    return searchPhotos(query, DEFAULT_PAGE, DEFAULT_LIMIT);
+  public SearchResult<Entity> search(SearchQuery query) {
+    return search(query, DEFAULT_PAGE, DEFAULT_LIMIT);
   }
 
-  public SearchResult<Image> searchPhotos(@NonNull String query, int page, int limit) {
-    if (StringUtils.isBlank(query)) {
-      return new SearchResult<>();
-    }
-
-    // Replace all whitespace in query with '+'
-    query = query.trim().replaceAll("\\s", "+");
-
-    ResponseEntity<SearchResult<Image>> response = performApiCall("media",
-            null,
-            Map.of(
-                    TOTAL, QUERY_PARAM_VALUE_ACTIVE,
-                    QUERY, query,
-                    LIMIT, limit,
-                    PAGE, page,
-                    TYPE, Image.TYPE
-            ),
-            new ParameterizedTypeReference<>() {
-            });
-    return response.getBody();
-  }
-
-  public SearchResult<Image> searchPhotos(@NonNull ImageSearchQuery query) {
-    return searchPhotos(query, DEFAULT_PAGE, DEFAULT_LIMIT);
-  }
-
-  public SearchResult<Image> searchPhotos(@NonNull ImageSearchQuery query, int page, int limit) {
-    if (StringUtils.isBlank(query.getTerm()) && query.getId() <= 0) {
-      return new SearchResult<>();
-    }
-
+  public SearchResult<Entity> search(SearchQuery query, int page, int limit) {
     Map<String, Object> queryParams = toQueryParamMap(query);
     queryParams.put(PAGE, page);
     queryParams.put(LIMIT, limit);
+    queryParams.put(ORDER_BY, DEFAULT_ORDER_BY);
 
-    ResponseEntity<SearchResult<Image>> response = performApiCall("media",
-            null,
-            queryParams,
-            new ParameterizedTypeReference<>() {
-            });
-
-    return response.getBody();
-  }
-
-
-  // --- VIDEOS --------------------------------------------------------------------------------------------------------
-
-  public SearchResult<Video> searchVideos(@NonNull String query) {
-    return searchVideos(query, DEFAULT_PAGE, DEFAULT_LIMIT);
-  }
-
-  public SearchResult<Video> searchVideos(@NonNull String query, int page, int limit) {
-    if (StringUtils.isBlank(query)) {
-      return new SearchResult<>();
-    }
-
-    // Replace all whitespace in query with '+'
-    query = query.trim().replaceAll("\\s", "+");
-
-    ResponseEntity<SearchResult<Video>> response = performApiCall("media",
-            null,
-            Map.of(
-                    TOTAL, QUERY_PARAM_VALUE_ACTIVE,
-                    QUERY, query,
-                    PAGE, page,
-                    LIMIT, limit,
-                    TYPE, Video.TYPE
-            ),
-            new ParameterizedTypeReference<>() {
-            });
-    return response.getBody();
-  }
-
-  public SearchResult<Video> searchVideos(@NonNull VideoSearchQuery query) {
-    return searchVideos(query, DEFAULT_PAGE, DEFAULT_LIMIT);
-  }
-
-  public SearchResult<Video> searchVideos(@NonNull VideoSearchQuery query, int page, int limit) {
-    if (StringUtils.isBlank(query.getTerm()) && query.getId() <= 0) {
-      return new SearchResult<>();
-    }
-
-    Map<String, Object> queryParams = toQueryParamMap(query);
-    queryParams.put(PAGE, page);
-    queryParams.put(LIMIT, limit);
-
-    ResponseEntity<SearchResult<Video>> response = performApiCall("media",
+    ResponseEntity<SearchResult<Entity>> response = performApiCall("media",
             null,
             queryParams,
             new ParameterizedTypeReference<>() {
@@ -232,14 +155,20 @@ public class BynderService {
 
   private Map<String, Object> toQueryParamMap(@NonNull SearchQuery searchQuery) {
     Map<String, Object> result = new HashMap<>();
-    if (searchQuery.getId() > 0) {
+    if (StringUtils.isNotBlank(searchQuery.getId())) {
       result.put(ID, searchQuery.getId());
     } else {
-      String searchTerm = searchQuery.getTerm().trim().replaceAll("\\s", "+");
+      String searchTerm = StringUtils.isBlank(searchQuery.getTerm())
+              ? WILDCARD_SEARCH
+              : searchQuery.getTerm().trim().replaceAll("\\s", "+");
+
       result.put(QUERY, searchTerm);
     }
     result.put(TOTAL, QUERY_PARAM_VALUE_ACTIVE);
-    result.put(TYPE, searchQuery.getType());
+    ContentHubType type = searchQuery.getType();
+    if (type != null && !type.equals(BynderContentHubType.ALL.getType())) {
+      result.put(TYPE, searchQuery.getType().getName());
+    }
     return result;
   }
 }
