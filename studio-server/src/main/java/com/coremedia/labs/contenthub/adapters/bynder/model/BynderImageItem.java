@@ -20,7 +20,7 @@ public class BynderImageItem extends BynderItem {
   private final Image image;
 
   public BynderImageItem(@NonNull ContentHubObjectId objectId, @NonNull Image image) {
-    super(objectId, BynderContentHubType.IMAGE);
+    super(objectId, image, BynderContentHubType.IMAGE);
     this.image = image;
   }
 
@@ -72,32 +72,7 @@ public class BynderImageItem extends BynderItem {
   }
 
   @Override
-  public String getThumbnailUrl() {
-    return image.getThumbnails().getUrl();
-  }
-
-  @Override
   public String getDataUrl() {
     return image.getTransformBaseUrl();
-  }
-
-  @Override
-  public String getCopyright() {
-    return image.getCopyright();
-  }
-
-  @Override
-  public String getUserCreated() {
-    return image.getUserCreated();
-  }
-
-  @Override
-  public Date getDateCreated() {
-    return image.getDateCreated();
-  }
-
-  @Override
-  public Date getDateModified() {
-    return image.getDateModified();
   }
 }

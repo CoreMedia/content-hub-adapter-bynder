@@ -1,6 +1,7 @@
 package com.coremedia.labs.contenthub.adapters.bynder.model;
 
 import com.coremedia.contenthub.api.*;
+import com.coremedia.labs.contenthub.adapters.bynder.service.model.Entity;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -14,10 +15,12 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
 
   private static final Logger LOG = LoggerFactory.getLogger(BynderItem.class);
 
+  private final Entity entity;
   private final BynderContentHubType type;
 
-  public BynderItem(@NonNull ContentHubObjectId objectId, BynderContentHubType type) {
+  public BynderItem(@NonNull ContentHubObjectId objectId, Entity entity, BynderContentHubType type) {
     super(objectId);
+    this.entity = entity;
     this.type = type;
   }
 
@@ -27,20 +30,26 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
   }
 
   public String getThumbnailUrl() {
-    return null;
+    return entity.getThumbnails().getUrl();
   }
 
-  public String getDataUrl() {
-    return null;
+  public abstract String getDataUrl();
+
+  public String getCopyright() {
+    return entity.getCopyright();
   }
 
-  public abstract String getCopyright();
+  public String getUserCreated() {
+    return entity.getUserCreated();
+  }
 
-  public abstract String getUserCreated();
+  public Date getDateCreated() {
+    return entity.getDateCreated();
+  }
 
-  public abstract Date getDateCreated();
-
-  public abstract Date getDateModified();
+  public Date getDateModified() {
+    return entity.getDateModified();
+  }
 
   @Nullable
   @Override

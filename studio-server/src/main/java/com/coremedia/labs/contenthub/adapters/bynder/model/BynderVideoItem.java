@@ -20,7 +20,7 @@ public class BynderVideoItem extends BynderItem {
   private final Video video;
 
   public BynderVideoItem(@NonNull ContentHubObjectId objectId, @NonNull Video video) {
-    super(objectId, BynderContentHubType.VIDEO);
+    super(objectId, video, BynderContentHubType.VIDEO);
     this.video = video;
   }
 
@@ -71,32 +71,7 @@ public class BynderVideoItem extends BynderItem {
   }
 
   @Override
-  public String getThumbnailUrl() {
-    return video.getThumbnails().getUrl();
-  }
-
-  @Override
   public String getDataUrl() {
     return video.getVideoPreviewURL();
-  }
-
-  @Override
-  public String getCopyright() {
-    return video.getCopyright();
-  }
-
-  @Override
-  public String getUserCreated() {
-    return video.getUserCreated();
-  }
-
-  @Override
-  public Date getDateCreated() {
-    return video.getDateCreated();
-  }
-
-  @Override
-  public Date getDateModified() {
-    return video.getDateModified();
   }
 }
