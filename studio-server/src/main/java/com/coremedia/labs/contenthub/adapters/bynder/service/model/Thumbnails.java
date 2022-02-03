@@ -5,13 +5,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Thumbnails {
 
   @JsonProperty("mini")
-  private String url;
+  private String miniUrl;
 
-  public String getUrl() {
-    return url;
+  @JsonProperty("webimage")
+  private String webImageUrl;
+
+  public String getMiniUrl() {
+    return miniUrl;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setMiniUrl(String miniUrl) {
+    this.miniUrl = miniUrl;
+  }
+
+  public String getWebImageUrl() {
+    return webImageUrl;
+  }
+
+  public void setWebImageUrl(String webImageUrl) {
+    this.webImageUrl = webImageUrl;
   }
 }

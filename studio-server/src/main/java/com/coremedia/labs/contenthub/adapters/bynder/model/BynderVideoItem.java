@@ -11,7 +11,6 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,9 +43,11 @@ public class BynderVideoItem extends BynderItem {
   @Override
   public List<DetailsSection> getDetails() {
     ContentHubBlob blob = null;
+    // this URL will *not* be used in Content Hub Preview (see ContentHubObjectResource#withBlobUri(...))
+    // correct preview delivery must be implemented through BynderItem#getBlob(String)
     String thumbnailUrl = getThumbnailUrl();
     if (StringUtils.isNotBlank(thumbnailUrl)) {
-      blob = new UrlBlobBuilder(this, "preview").withUrl(thumbnailUrl).build();
+      blob = new UrlBlobBuilder(this, CLASSIFIER_PREVIEW).withUrl(thumbnailUrl).build();
     }
 
     return List.of(

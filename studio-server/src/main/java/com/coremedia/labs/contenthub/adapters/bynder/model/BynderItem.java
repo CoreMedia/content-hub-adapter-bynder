@@ -13,6 +13,8 @@ import java.util.Date;
 
 public abstract class BynderItem extends BynderContentHubObject implements Item {
 
+  protected static final String CLASSIFIER_PREVIEW = "preview";
+
   private static final Logger LOG = LoggerFactory.getLogger(BynderItem.class);
 
   private final Entity entity;
@@ -30,7 +32,11 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
   }
 
   public String getThumbnailUrl() {
-    return entity.getThumbnails().getUrl();
+    return entity.getThumbnails().getMiniUrl();
+  }
+
+  public String getPreviewUrl() {
+    return entity.getThumbnails().getWebImageUrl();
   }
 
   public abstract String getDataUrl();
@@ -55,7 +61,12 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
   @Override
   public ContentHubBlob getBlob(String classifier) {
     ContentHubBlob blob = null;
-    String blobUrl = getDataUrl();
+    String blobUrl;
+    if (classifier.equals(CLASSIFIER_PREVIEW)) {
+      blobUrl = getPreviewUrl();
+    } else {
+      blobUrl = getDataUrl();
+    }
 
     if (StringUtils.isNotBlank(blobUrl)) {
       try {
