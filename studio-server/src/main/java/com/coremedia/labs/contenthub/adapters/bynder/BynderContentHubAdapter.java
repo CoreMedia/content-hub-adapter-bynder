@@ -1,6 +1,7 @@
 package com.coremedia.labs.contenthub.adapters.bynder;
 
 import com.coremedia.contenthub.api.*;
+import com.coremedia.contenthub.api.column.ColumnProvider;
 import com.coremedia.contenthub.api.exception.ContentHubException;
 import com.coremedia.contenthub.api.pagination.PaginationRequest;
 import com.coremedia.contenthub.api.search.ContentHubSearchResult;
@@ -30,6 +31,8 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
 
   private final BynderFolder rootFolder;
 
+  private final BynderColumnProvider columnProvider;
+
   public BynderContentHubAdapter(BynderContentHubSettings settings, String connectionId) {
     this.settings = settings;
     this.connectionId = connectionId;
@@ -42,6 +45,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
     rootFolder.addSubfolder(videosRootFolder);
 
     bynderService = new BynderService(settings.getApiEndpoint(), settings.getAccessToken());
+    columnProvider = new BynderColumnProvider();
   }
 
   // --- ContentHubAdapter ---------------------------------------------------------------------------------------------
@@ -227,4 +231,10 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
   public Collection<ContentHubType> supportedTypes() {
     return SEARCH_TYPES;
   }
+
+  @Override
+  public ColumnProvider columnProvider() {
+    return columnProvider;
+  }
+
 }

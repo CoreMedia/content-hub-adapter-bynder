@@ -36,6 +36,12 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
 
   public abstract String getCopyright();
 
+  public abstract String getUserCreated();
+
+  public abstract Date getDateCreated();
+
+  public abstract Date getDateModified();
+
   @Nullable
   @Override
   public ContentHubBlob getBlob(String classifier) {

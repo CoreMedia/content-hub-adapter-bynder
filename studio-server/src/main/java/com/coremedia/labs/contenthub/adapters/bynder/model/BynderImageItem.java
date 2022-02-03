@@ -11,6 +11,7 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,5 +84,20 @@ public class BynderImageItem extends BynderItem {
   @Override
   public String getCopyright() {
     return image.getCopyright();
+  }
+
+  @Override
+  public String getUserCreated() {
+    return image.getUserCreated();
+  }
+
+  @Override
+  public Date getDateCreated() {
+    return image.getDateCreated();
+  }
+
+  @Override
+  public Date getDateModified() {
+    return image.getDateModified();
   }
 }
