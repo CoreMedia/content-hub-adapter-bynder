@@ -8,7 +8,7 @@ import java.util.List;
 public class SearchResult<T> {
 
   @JsonProperty("total")
-  private Count total;
+  private Total total;
 
   @JsonProperty("media")
   private List<T> media;
@@ -17,11 +17,11 @@ public class SearchResult<T> {
     this.media = new ArrayList<>();
   }
 
-  public Count getTotal() {
+  public Total getTotal() {
     return total;
   }
 
-  public void setTotal(Count total) {
+  public void setTotal(Total total) {
     this.total = total;
   }
 

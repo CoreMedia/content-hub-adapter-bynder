@@ -9,12 +9,6 @@ public class Video extends Entity {
   @JsonProperty("videoPreviewURLs")
   private String[] urls;
 
-  @JsonProperty("width")
-  private int width;
-
-  @JsonProperty("height")
-  private int height;
-
   public String getVideoPreviewURL() {
     if (urls != null && urls.length > 0) {
       return urls[0];
@@ -27,19 +21,4 @@ public class Video extends Entity {
     this.urls = urls;
   }
 
-  public int getWidth() {
-    return width;
-  }
-
-  public void setWidth(int width) {
-    this.width = width;
-  }
-
-  public int getHeight() {
-    return height;
-  }
-
-  public void setHeight(int height) {
-    this.height = height;
-  }
 }

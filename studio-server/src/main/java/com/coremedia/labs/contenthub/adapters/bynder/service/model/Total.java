@@ -2,7 +2,7 @@ package com.coremedia.labs.contenthub.adapters.bynder.service.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Count {
+public class Total {
 
   @JsonProperty("count")
   private int count;

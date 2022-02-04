@@ -18,11 +18,11 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
   @Override
   public ContentModel transform(Item source, ContentHubAdapter contentHubAdapter, ContentHubContext contentHubContext) {
     if (!(source instanceof BynderItem)) {
-      throw new IllegalArgumentException("Cannot transform source " + source);
+      throw new IllegalArgumentException("cannot transform source " + source);
     }
 
     BynderItem item = (BynderItem) source;
-    LOG.info("Creating content model for item {}.", item);
+    LOG.debug("creating content model for item {}", item);
 
     ContentModel contentModel = ContentModel.createContentModel(item);
     contentModel.put("title", item.getName());
