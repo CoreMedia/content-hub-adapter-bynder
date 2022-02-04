@@ -43,11 +43,11 @@ public class BynderVideoItem extends BynderItem {
   @Override
   public List<DetailsSection> getDetails() {
     ContentHubBlob blob = null;
-    // this URL will *not* be used in Content Hub Preview (see ContentHubObjectResource#withBlobUri(...))
+    // this URL will *not* be used in Content Hub Preview (see https://documentation.coremedia.com/cmcc-10/artifacts/2107/webhelp/studio-developer-en/content/Content_Hub.html)
     // correct preview delivery must be implemented through BynderItem#getBlob(String)
-    String thumbnailUrl = getThumbnailUrl();
-    if (StringUtils.isNotBlank(thumbnailUrl)) {
-      blob = new UrlBlobBuilder(this, CLASSIFIER_PREVIEW).withUrl(thumbnailUrl).build();
+    String previewUrl = getPreviewUrl();
+    if (StringUtils.isNotBlank(previewUrl)) {
+      blob = new UrlBlobBuilder(this, CLASSIFIER_PREVIEW).withUrl(previewUrl).build();
     }
 
     return List.of(
