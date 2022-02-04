@@ -50,6 +50,9 @@ public abstract class Entity {
   @JsonProperty("userCreated")
   private String userCreated;
 
+  @JsonProperty("extension")
+  private List<String> extension;
+
   public String getId() {
     return id;
   }
@@ -136,5 +139,13 @@ public abstract class Entity {
 
   public void setUserCreated(String userCreated) {
     this.userCreated = userCreated;
+  }
+
+  public List<String> getExtension() {
+    return extension;
+  }
+
+  public void setExtension(List<String> extension) {
+    this.extension = extension;
   }
 }

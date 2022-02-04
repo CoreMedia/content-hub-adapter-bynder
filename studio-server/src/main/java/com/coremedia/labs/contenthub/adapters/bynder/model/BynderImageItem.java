@@ -61,6 +61,7 @@ public class BynderImageItem extends BynderItem {
             // Metadata
             new DetailsSection("metadata", List.of(
                     new DetailsElement<>("id", image.getId()),
+                    new DetailsElement<>("extension", image.getExtension() != null ? String.join(", ", image.getExtension()) : "-"),
                     new DetailsElement<>("dimensions", String.format("%dx%d", image.getWidth(), image.getHeight())),
                     new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(image.getFileSize())),
                     new DetailsElement<>("user", image.getUserCreated()),

@@ -61,6 +61,7 @@ public class BynderVideoItem extends BynderItem {
             // Metadata
             new DetailsSection("metadata", List.of(
                     new DetailsElement<>("id", video.getId()),
+                    new DetailsElement<>("extension", video.getExtension() != null ? String.join(", ", video.getExtension()) : "-"),
                     new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(video.getFileSize())),
                     new DetailsElement<>("user", video.getUserCreated()),
                     new DetailsElement<>("tags", video.getTags() != null ? String.join(", ", video.getTags()) : "-"),
