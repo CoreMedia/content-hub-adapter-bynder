@@ -24,7 +24,13 @@
     <dependency>
       <groupId>com.coremedia.content-hub</groupId>
       <artifactId>content-hub-api</artifactId>
-      <scope>provided</scope>
+    </dependency>
+
+    <!-- CoreMedia dependencies -->
+
+    <dependency>
+      <groupId>com.coremedia.cms</groupId>
+      <artifactId>cap-unified-api</artifactId>
     </dependency>
 
     <!-- THIRD-PARTY dependencies -->
@@ -42,19 +48,16 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -66,7 +69,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -95,6 +97,21 @@
             <goals>
               <goal>jar</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <configuration>
+              <ignoredUnusedDeclaredDependencies combine.children="append">
+                <ignoredUnusedDeclaredDependency>com.coremedia.cms:cap-unified-api
+                </ignoredUnusedDeclaredDependency>
+              </ignoredUnusedDeclaredDependencies>
+            </configuration>
           </execution>
         </executions>
       </plugin>

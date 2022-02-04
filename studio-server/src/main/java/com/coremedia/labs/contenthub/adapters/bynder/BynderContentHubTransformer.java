@@ -1,18 +1,9 @@
 package com.coremedia.labs.contenthub.adapters.bynder;
 
-import com.coremedia.labs.contenthub.adapters.bynder.model.BynderItem;
+import com.coremedia.contenthub.api.*;
 import com.coremedia.labs.contenthub.adapters.bynder.model.BynderImageItem;
+import com.coremedia.labs.contenthub.adapters.bynder.model.BynderItem;
 import com.coremedia.labs.contenthub.adapters.bynder.model.BynderVideoItem;
-import com.coremedia.contenthub.api.ContentHubAdapter;
-import com.coremedia.contenthub.api.ContentHubBlob;
-import com.coremedia.contenthub.api.ContentHubContentCreationException;
-import com.coremedia.contenthub.api.ContentHubContext;
-import com.coremedia.contenthub.api.ContentHubObject;
-import com.coremedia.contenthub.api.ContentHubTransformer;
-import com.coremedia.contenthub.api.ContentModel;
-import com.coremedia.contenthub.api.ContentModelReference;
-import com.coremedia.contenthub.api.Item;
-import com.coremedia.contenthub.api.UrlBlobBuilder;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +26,11 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
 
     ContentModel contentModel = ContentModel.createContentModel(item);
     contentModel.put("title", item.getName());
-    contentModel.put("copyright", item.getCopyright() );
+    contentModel.put("copyright", item.getCopyright());
+    String description = item.getDescription();
+    if (description != null) {
+      contentModel.put("detailText", ContentCreationUtil.convertStringToRichtext(description));
+    }
 
     if (item instanceof BynderImageItem) {
       ContentHubBlob blob = item.getBlob("file");
@@ -46,7 +41,7 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
       BynderVideoItem videoItem = (BynderVideoItem) item;
       contentModel.put("dataUrl", videoItem.getDataUrl());
 
-      // Store image reference
+      // Store preview still image reference
       String previewUrl = videoItem.getPreviewUrl();
       if (previewUrl != null) {
         ContentModelReference ref = ContentModelReference.create(contentModel, "CMPicture", previewUrl);
@@ -62,15 +57,15 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
   public ContentModel resolveReference(ContentHubObject owner, ContentModelReference reference, ContentHubAdapter contentHubAdapter, ContentHubContext contentHubContext) {
     Object data = reference.getData();
     if (!(data instanceof String)) {
-      throw new IllegalArgumentException("Not my reference: " + reference);
+      throw new IllegalArgumentException("no valid reference: " + reference);
     }
 
     String imageUrl = (String) data;
-    String imageName = reference.getOwner().getContentName() + " (Thumbnails)";
+    String imageName = reference.getOwner().getContentName() + " (Preview)";
 
     ContentModel referenceModel = ContentModel.createReferenceModel(imageName, reference.getCoreMediaContentType());
-    referenceModel.put("data", new UrlBlobBuilder(owner, "thumbnail").withUrl(imageUrl).build());
-    referenceModel.put("title", "Video Thumbnails " + imageName);
+    referenceModel.put("data", new UrlBlobBuilder(owner, "preview").withUrl(imageUrl).build());
+    referenceModel.put("title", "Video " + imageName);
 
     return referenceModel;
   }
