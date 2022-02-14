@@ -3,16 +3,18 @@ package com.coremedia.labs.contenthub.adapters.bynder;
 import com.coremedia.contenthub.api.*;
 import com.coremedia.labs.contenthub.adapters.bynder.model.BynderImageItem;
 import com.coremedia.labs.contenthub.adapters.bynder.model.BynderItem;
-import com.coremedia.labs.contenthub.adapters.bynder.model.BynderVideoItem;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-
 public class BynderContentHubTransformer implements ContentHubTransformer {
 
   private static final Logger LOG = LoggerFactory.getLogger(BynderContentHubTransformer.class);
+
+  private static final String PROPERTY_TITLE = "title";
+  private static final String PROPERTY_DATA = "data";
+  private static final String PROPERTY_COPYRIGHT = "copyright";
+  private static final String PROPERTY_DETAIL_TEXT = "detailText";
 
   @Nullable
   @Override
@@ -25,28 +27,20 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
     LOG.debug("creating content model for item {}", item);
 
     ContentModel contentModel = ContentModel.createContentModel(item);
-    contentModel.put("title", item.getName());
-    contentModel.put("copyright", item.getCopyright());
+    contentModel.put(PROPERTY_TITLE, item.getName());
+    contentModel.put(PROPERTY_COPYRIGHT, item.getCopyright());
     String description = item.getDescription();
     if (description != null) {
-      contentModel.put("detailText", ContentCreationUtil.convertStringToRichtext(description));
+      contentModel.put(PROPERTY_DETAIL_TEXT, ContentCreationUtil.convertStringToRichtext(description));
     }
 
     if (item instanceof BynderImageItem) {
-      ContentHubBlob blob = item.getBlob("file");
+      ContentHubBlob blob = item.getBlob(BynderItem.CLASSIFIER_ORIGINAL);
       if (blob != null) {
-        contentModel.put("data", blob);
+        contentModel.put(PROPERTY_DATA, blob);
       }
-    } else if (item instanceof BynderVideoItem) {
-      BynderVideoItem videoItem = (BynderVideoItem) item;
-      contentModel.put("dataUrl", videoItem.getDataUrl());
-
-      // Store preview still image reference
-      String previewUrl = videoItem.getPreviewUrl();
-      if (previewUrl != null) {
-        ContentModelReference ref = ContentModelReference.create(contentModel, "CMPicture", previewUrl);
-        contentModel.put("pictures", Collections.singletonList(ref));
-      }
+    } else {
+      throw new IllegalArgumentException("transformation of type " + item.getClass().getName() + " not yet implemented");
     }
 
     return contentModel;
@@ -64,8 +58,8 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
     String imageName = reference.getOwner().getContentName() + " (Preview)";
 
     ContentModel referenceModel = ContentModel.createReferenceModel(imageName, reference.getCoreMediaContentType());
-    referenceModel.put("data", new UrlBlobBuilder(owner, "preview").withUrl(imageUrl).build());
-    referenceModel.put("title", "Video " + imageName);
+    referenceModel.put(PROPERTY_DATA, new UrlBlobBuilder(owner, BynderItem.CLASSIFIER_PREVIEW).withUrl(imageUrl).build());
+    referenceModel.put(PROPERTY_TITLE, "Video " + imageName);
 
     return referenceModel;
   }

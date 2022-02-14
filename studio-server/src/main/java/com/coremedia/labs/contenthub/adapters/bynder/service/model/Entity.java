@@ -52,10 +52,15 @@ public abstract class Entity {
 
   @JsonProperty("extension")
   private List<String> extension;
+
   @JsonProperty("width")
   private int width;
+
   @JsonProperty("height")
   private int height;
+
+  @JsonProperty("original")
+  private String original;
 
   public String getId() {
     return id;
@@ -167,5 +172,13 @@ public abstract class Entity {
 
   public void setHeight(int height) {
     this.height = height;
+  }
+
+  public String getOriginal() {
+    return original;
+  }
+
+  public void setOriginal(String original) {
+    this.original = original;
   }
 }

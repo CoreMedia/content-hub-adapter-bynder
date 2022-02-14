@@ -1,0 +1,12 @@
+
+Lists of 10 third-party dependencies.
+     (The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.11.4 - http://github.com/FasterXML/jackson)
+     (GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1) SpotBugs Annotations (com.github.spotbugs:spotbugs-annotations:3.1.5 - https://spotbugs.github.io/)
+     (Apache License, Version 2.0) Apache Commons IO (commons-io:commons-io:2.8.0 - https://commons.apache.org/proper/commons-io/)
+     (Eclipse Public License 1.0) JUnit (junit:junit:4.13.2 - http://junit.org)
+     (Unknown license) ext-as (net.jangaroo:ext-as:7.2.0-3 - http://nexus.sonatype.org/oss-repository-hosting.html/ext-as)
+     (Apache License, Version 2.0) Apache Commons Lang (org.apache.commons:commons-lang3:3.12.0 - https://commons.apache.org/proper/commons-lang/)
+     (MIT License) SLF4J API Module (org.slf4j:slf4j-api:1.7.30 - http://www.slf4j.org)
+     (Apache License, Version 2.0) Spring Context (org.springframework:spring-context:5.2.15.RELEASE - https://github.com/spring-projects/spring-framework)
+     (Apache License, Version 2.0) Spring Core (org.springframework:spring-core:5.2.15.RELEASE - https://github.com/spring-projects/spring-framework)
+     (Apache License, Version 2.0) Spring Web (org.springframework:spring-web:5.2.15.RELEASE - https://github.com/spring-projects/spring-framework)

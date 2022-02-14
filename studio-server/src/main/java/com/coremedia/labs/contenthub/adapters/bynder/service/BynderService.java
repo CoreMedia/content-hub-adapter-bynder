@@ -2,6 +2,7 @@ package com.coremedia.labs.contenthub.adapters.bynder.service;
 
 import com.coremedia.contenthub.api.ContentHubType;
 import com.coremedia.labs.contenthub.adapters.bynder.model.BynderContentHubType;
+import com.coremedia.labs.contenthub.adapters.bynder.service.model.Download;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.Entity;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchQuery;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchResult;
@@ -44,6 +45,9 @@ public class BynderService {
   private static final int MAX_PER_PAGE = 200;
   private static final int QUERY_PARAM_VALUE_ACTIVE = 1;
   private static final String WILDCARD_SEARCH = "*";
+  private static final String MEDIA_ID_ENDPOINT_PATH = "media/{id}";
+  private static final String MEDIA_DOWNLOAD_ENDPOINT_PATH = "media/{id}/download";
+  private static final String MEDIA_SEARCH_ENDPOINT_PATH = "media";
 
   private static final String BEARER_HEADER_KEY = "Bearer ";
 
@@ -64,14 +68,33 @@ public class BynderService {
    * @return the asset or <code>null</code>
    */
   public Entity getAssetById(@NonNull String assetId) {
-    ResponseEntity<Entity> response = performApiCall("media",
-            null,
+    ResponseEntity<Entity> response = performApiCall(MEDIA_ID_ENDPOINT_PATH,
             Map.of(ID, assetId),
+            null,
             new ParameterizedTypeReference<>() {
             });
     if (response.getStatusCode().equals(HttpStatus.OK)) {
       return Optional.ofNullable(response.getBody())
               .orElse(null);
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Retrieves the service-internal download URL of a single asset.
+   *
+   * @param assetId The asset’s ID. Required.
+   * @return the asset's service-internal download URL.
+   */
+  public String getAssetDownloadById(@NonNull String assetId) {
+    ResponseEntity<Download> response = performApiCall(MEDIA_DOWNLOAD_ENDPOINT_PATH,
+            Map.of(ID, assetId),
+            null,
+            new ParameterizedTypeReference<>() {
+            });
+    if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody() != null) {
+      return response.getBody().getS3File();
     } else {
       return null;
     }
@@ -87,7 +110,7 @@ public class BynderService {
     queryParams.put(LIMIT, limit);
     queryParams.put(ORDER_BY, DEFAULT_ORDER_BY);
 
-    ResponseEntity<SearchResult<Entity>> response = performApiCall("media",
+    ResponseEntity<SearchResult<Entity>> response = performApiCall(MEDIA_SEARCH_ENDPOINT_PATH,
             null,
             queryParams,
             new ParameterizedTypeReference<>() {

@@ -5,7 +5,9 @@ import com.coremedia.contenthub.api.ContentHubObjectId;
 import com.coremedia.contenthub.api.UrlBlobBuilder;
 import com.coremedia.contenthub.api.preview.DetailsElement;
 import com.coremedia.contenthub.api.preview.DetailsSection;
+import com.coremedia.labs.contenthub.adapters.bynder.service.BynderService;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.Video;
+import com.coremedia.mimetype.MimeTypeService;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.io.FileUtils;
@@ -18,8 +20,11 @@ public class BynderVideoItem extends BynderItem {
 
   private final Video video;
 
-  public BynderVideoItem(@NonNull ContentHubObjectId objectId, @NonNull Video video) {
-    super(objectId, video, BynderContentHubType.VIDEO);
+  public BynderVideoItem(@NonNull ContentHubObjectId objectId,
+                         @NonNull Video video,
+                         @NonNull BynderService bynderService,
+                         @NonNull MimeTypeService mimeTypeService) {
+    super(objectId, video, BynderContentHubType.VIDEO, bynderService, mimeTypeService);
     this.video = video;
   }
 
@@ -62,6 +67,7 @@ public class BynderVideoItem extends BynderItem {
             new DetailsSection("metadata", List.of(
                     new DetailsElement<>("id", video.getId()),
                     new DetailsElement<>("extension", video.getExtension() != null ? String.join(", ", video.getExtension()) : "-"),
+                    new DetailsElement<>("dimensions", String.format("%dx%d", video.getWidth(), video.getHeight())),
                     new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(video.getFileSize())),
                     new DetailsElement<>("user", video.getUserCreated()),
                     new DetailsElement<>("tags", video.getTags() != null ? String.join(", ", video.getTags()) : "-"),

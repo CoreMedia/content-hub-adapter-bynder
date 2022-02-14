@@ -15,6 +15,7 @@ import com.coremedia.labs.contenthub.adapters.bynder.service.BynderService;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.Entity;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchQuery;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchResult;
+import com.coremedia.mimetype.MimeTypeService;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.slf4j.Logger;
@@ -23,22 +24,20 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSearchService {
 
   private static final Logger LOG = LoggerFactory.getLogger(BynderContentHubAdapter.class);
   private static final String ID_PREFIX = "id:";
 
   private final String connectionId;
-
   private final BynderService bynderService;
-
   private final BynderFolder rootFolder;
-
   private final BynderColumnProvider columnProvider;
+  private final MimeTypeService mimeTypeService;
 
-  public BynderContentHubAdapter(BynderContentHubSettings settings, String connectionId) {
+  public BynderContentHubAdapter(BynderContentHubSettings settings, String connectionId, MimeTypeService mimeTypeService) {
     this.connectionId = connectionId;
+    this.mimeTypeService = mimeTypeService;
 
     rootFolder = new BynderFolder(new ContentHubObjectId(connectionId, "root"), settings.getDisplayName(), BynderContentHubType.FOLDER);
     bynderService = new BynderService(settings.getApiEndpoint(), settings.getAccessToken());
@@ -78,10 +77,10 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
     try {
       items = bynderService.search(SearchQuery.queryForTerm("*")).getMedia()
               .stream()
-              .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
+              .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m, bynderService, mimeTypeService))
               .collect(Collectors.toUnmodifiableList());
     } catch (Exception e) {
-      LOG.warn("Unable to get items for folder {}. {}", folder, e);
+      LOG.warn("unable to get items for folder {}: {}", folder, e);
     }
 
     return items;
@@ -91,7 +90,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
   @Override
   public Item getItem(ContentHubContext context, ContentHubObjectId id) throws ContentHubException {
     return Optional.ofNullable(bynderService.getAssetById(id.getExternalId()))
-            .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
+            .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m, bynderService, mimeTypeService))
             .orElse(null);
   }
 
@@ -113,8 +112,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
 
   private static final List<ContentHubType> SEARCH_TYPES = List.of(
           BynderContentHubType.ALL.getType(),
-          BynderContentHubType.IMAGE.getType(),
-          BynderContentHubType.VIDEO.getType()
+          BynderContentHubType.IMAGE.getType()
   );
 
   @NonNull
@@ -147,7 +145,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
       result = new ContentHubSearchResult(
               searchResult.getMedia()
                       .stream()
-                      .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m))
+                      .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m, bynderService, mimeTypeService))
                       .collect(Collectors.toUnmodifiableList()));
     }
     return result;
