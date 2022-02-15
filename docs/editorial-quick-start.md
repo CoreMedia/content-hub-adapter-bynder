@@ -25,84 +25,102 @@
 As mentioned in the main documentation, the Content Hub Adapter for Bynder plugin
 provides access to configurable Bynder accounts. Common to all
 Content Hub Adapters is the appearance in CoreMedia Studio. The image below shows 
-multiple configured Content Hub Adapters in Studio (Content Hub Adapter for Bynder is marked with a blue background).
+multiple configured Content Hub Adapters in Studio (a connection on Content Hub Adapter for Bynder is currently selected).
 
-![Image1: Studio appearance with configured adapters](images/editorial/editorial-documentation_1.png)
+![Studio appearance with configured adapters](images/editorial/editorial-documentation_1.png)
 
 ## Types of Content Working with This Adapter
 - Images
   
+Other asset types will be shown but will produce an error when trying to import them.
+
 ## Browsing the Bynder Repository
 Depending on the configuration of the adapter, the appearance of the tree may vary. The following sections 
 take care of all configuration **places** and **options**.
 
 ### Basic Adapter Configuration
-This section covers the two possibilities to enable the content-hub-adapter-bynder integration. Please note that those
-options are valid for all content-hub-adapters. Before configuring the adapter, please refer to the documentation [Content hub configuration](https://documentation.coremedia.com/cmcc-10/artifacts/2104/webhelp/deployment-en/content/Studio-Contenthub-Configuration.html)
+This section covers the two possibilities to enable the Content Hub Adapter for Bynder and configure on or more _connections_ on it. Please note that those
+options are valid for all Content Hub Adapters. Before configuring the adapter, please refer to the documentation [Content Hub Configuration](https://documentation.coremedia.com/cmcc-10/artifacts/2104/webhelp/deployment-en/content/Studio-Contenthub-Configuration.html)
 for preliminary steps.
 
 #### Global Adapter Configuration
-To enable the content-hub-adapter-bynder for all sites, it is necessary to create a _Settings_ document inside folder:
+To enable the Content Hub Adapter for Bynder and associated connections for all sites, it is necessary to create a global _Settings_ document inside folder:
 * _/Settings/Options/Settings/Content Hub/Connections/_
 For convenience reasons, naming proposal of this document is "Bynder" (name of the third-party system)
 
 #### Site-Specific Adapter Configuration
-To enable the content-hub-adapter-bynder for a single site, it is necessary to create a _Settings_ document inside folder:
+To enable the Content Hub Adapter for Bynder and associated connections for just a single site, it is necessary to create a _Settings_ document inside folder:
 * _Options/Settings/Content Hub/Connections/_ (relative to the site's root folder)
 For convenience reasons, naming proposal of this document is "Bynder" (name of the third-party system)
 
+Site-specific configuration is valid for users that have this site set as their _Preferred Site_. Changing the _Preferred Site_ activates the corresponding site-specific configuration (and deactivates other site-specific configurations).
+
+Global configuration will always be valid in addition to site-specific configuration.
 
 ### Detailed Adapter Configuration
 
 #### Basic Structure
-The table below shows the initial top-level entry for all Content Hub configurations.
+The table below shows the initial top-level entry for all Content Hub Adapter configurations.
 
 | Key         | Type       | Required   |
 |-------------|------------|------------|
 | connections | StructList | Yes        |
 
-After creation of the initial struct list called **connections** the next step is to create the first entry. This can be done 
-in Studio with the struct editor by pressing "Add item to ListProperty". Under this new item some basic settings are added. The table below shows the entries which are common for all connectors. 
+After creation of the initial struct list **connections** the next step is to create the first entry. This can be done 
+in Studio with the struct editor by pressing "_Add item to ListProperty_". Under this new item  basic settings are added. The table below shows the entries which are common for all connectors. _connectionId_ can be freely chosen (use only letters and digits) but must be unique and different from _all other_ Content Hub Adapter connections (be it Bynder or other third-party systems). 
 
 | Key           | Type       | Value                 | Required   |
 |---------------|------------|------------           |------------|
-| connectionId  | String      | <SOME_UNIQUE_ID>     | Yes        |
+| connectionId  | String      | <SOME-UNIQUE-ID>     | Yes        |
 | factoryId     | String      | bynder    | Yes        |
 | enabled       | Boolean     | true or false        | Yes        |
 | settings      | Struct     |                      | Yes        |
           
 
 #### Bynder-Specific Configuration
-In section [Basic structure](#basic-structure) and according to the table, the settings struct is currently empty.
-The settings struct itself holds specific configuration options for the connector (common to all connectors).
+Initially, struct _settings_ is empty.
+The  struct  holds specific configuration options for the connector. Select struct _settings_ and click "_Add String_" for each entry.
 The table below depicts all potential entries. 
 
-| Key               | Type       | Value                                                    | Required   | 
+| Key               | Type       | Description                                                    | Required   | 
 |---------------    |------------|------------                                              |------------|
 | displayName       | String     | Name of the connection's root folder to display in Studio             | No         |
 | apiEndpoint         | String     | URL of Bynder REST API endpoint including API base path _(/api/v4/)_         | Yes         |
 | accessToken            | String     | Access Token for Bynder account          | Yes         |
 
-## Multiple Connections
-
-More than one connection can be configured, if required. Click "Add item to ListProperty" again on the _connections_ node in the settings and repeat configuration steps for the new connection.
+For the creation of Bynder access tokens, refer to Bynder support article [Permanent Tokens](https://support.bynder.com/hc/en-us/articles/360013875300).
 
 #### Example
-The image below depicts a full configuration of the Content Hub Adapter for Bynder in global space.
+The image below shows a full configuration of the Content Hub Adapter for Bynder.
 
-![Image2: Full adapter configuration](images/editorial/editorial-documentation_2.png)
+![Full adapter configuration](images/editorial/editorial-documentation_2.png)
+
+After changes or additions to adapter configurations, users may need to reload Studio in their browsers to see those new configurations.
+
+## Multiple Connections
+
+More than one connection can be configured, if required. Click "_Add item to ListProperty_" again on the _connections_ node in the settings and repeat configuration steps for the new connection. Mind to choose a new unique _connectionId_ and a recognizable _displayName_.
 
 ## Usage
-Once the connector is configured, the "Bynder" named tree appears in the library. By clicking on "Bynder",
-the tree expands to all configured Bynder connections. Each connection folder shows the latest assets from the corresponding Bynder repository. The image below shows the appearance.
+Once the connector is configured, the "Bynder" named node appears in the library. By clicking on "Bynder",
+the tree expands to all configured Bynder connections. Each connection folder shows the latest assets from the corresponding Bynder repository sorted by descending modification date. Search can be used to limit the results to the desired assets (see [Search](search)).
 
-![Image2: Expanded Studio tree](images/editorial/editorial-documentation_3.png)  
+Folder contents are cached, so if new uploads to Bynder are missing, click button "_Reload Folder_" to update to the latest contents (red frame):
 
-Assets can be imported into the CoreMedia CMS. The picture below shows the 
-button for import (purple frame).
+![Reload Bynder Contents](images/editorial/editorial-documentation_3.png)
 
-![Image2: Expanded Studio tree](images/editorial/editorial-documentation_4.png)  
+When an asset is selected, preview and detail information for the asset are available in the _Details_ section on the right-hand side:
 
-Keep in mind that certain requirements on the connected Bynder account need to be met to allow download of full-size images to transfer them to the CoreMedia repository. See <https://bynder.docs.apiary.io/#reference/download/download-operations/retrieve-asset-download-location>.
+![Asset Details](images/editorial/editorial-documentation_5.png)  
 
-**SEARCH**
+Assets can be imported into the CoreMedia CMS by selecting the desired asset and clicking button "_Create new content item_" (red frame):
+
+![Asset Import](images/editorial/editorial-documentation_4.png)  
+
+Keep in mind that certain requirements on the connected Bynder account need to be met to allow download of full-size images to transfer them to the CoreMedia repository. See <https://bynder.docs.apiary.io/#reference/download/download-operations/retrieve-asset-download-location>. You may need to contact Bynder support to clarify settings for your Bynder account (refer to previous documentation URL for requirements when contacting Bynder support).
+
+### Search
+
+Assets can be search for by _Type_ and full-text search. Select a type to restrict search to from the drop-down list and enter asset _names_, _tags_, _keywords_, _author_, or _extensions_ (_jpg_, _png_, _gif_) in the text input field:
+
+![Search](images/editorial/editorial-documentation_6.png)  
