@@ -69,7 +69,6 @@
   </dependencies>
 
   <build>
-
     <plugins>
       <plugin>
         <groupId>net.jangaroo</groupId>
@@ -77,6 +76,9 @@
         <version>${jangaroo.version}</version>
         <extensions>true</extensions>
         <configuration>
+          <additionalCssNonBundle>
+            <value>resources/css/content-hub-adapter-bynder-icons.css</value>
+          </additionalCssNonBundle>
           <namespaces>
             <namespace>
               <uri>exml:com.coremedia.labs.plugins.contenthub.bynder.config</uri>

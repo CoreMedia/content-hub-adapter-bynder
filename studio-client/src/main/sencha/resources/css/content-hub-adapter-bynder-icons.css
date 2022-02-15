@@ -1,0 +1,23 @@
+@charset "UTF-8";
+@font-face {
+  font-family: "content-hub-adapter-bynder-icons";
+  src: url("../fonts/content-hub-adapter-bynder-icons.woff2") format("woff2"), url("../fonts/content-hub-adapter-bynder-icons.woff") format("woff");
+}
+
+.content-hub-adapter-bynder-icons {
+  font-family: "content-hub-adapter-bynder-icons";
+  display: inline-block;
+  line-height: 1;
+  font-weight: normal;
+  font-style: normal;
+  speak: none;
+  text-decoration: inherit;
+  text-transform: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.content-hub-adapter-bynder-icons--bynder:before {
+  content: "";
+}
