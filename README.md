@@ -17,21 +17,21 @@ The adapter currently supports only images.
 
 ## Versioning
 
-To find out which CoreMedia versions are supported by this project, please take look at the releases section or on the existing branches. To find the matching version of your CoreMedia system, please checkout the branch with the corresponding name. For example, if your CoreMedia version is 2007.2, checkout the branch cmcc-10-2007.
+To find out which CoreMedia versions are supported by this project, please take look at the releases section or on the existing branches. To find the matching version of your CoreMedia system, please checkout the branch with the corresponding name. For example, if your CoreMedia version is 2107.3, checkout the branch cmcc-10-2107.
 
 ## Documentation & Tutorial
 
 * **[Documentation](docs/README.md)**
 
-    for guides for editors, administrators and developers    
+    Guides for editors, administrators and developers    
 
 * **[Changelog](CHANGELOG.md)**
 
-    for recent changes
+    Recent changes
 
 * **[Issues](https://github.com/CoreMedia/content-hub-adapter-bynder/issues)**
 
-    for known bugs and feature requests
+    Known bugs and feature requests
 
 ## CoreMedia Labs
 

@@ -1,7 +1,8 @@
 
-Lists of 10 third-party dependencies.
+Lists of 11 third-party dependencies.
      (The Apache Software License, Version 2.0) Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.11.4 - http://github.com/FasterXML/jackson)
      (GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1) SpotBugs Annotations (com.github.spotbugs:spotbugs-annotations:3.1.5 - https://spotbugs.github.io/)
+     (EDL 1.0) Jakarta Activation (com.sun.activation:jakarta.activation:1.2.2 - https://github.com/eclipse-ee4j/jaf/jakarta.activation)
      (Apache License, Version 2.0) Apache Commons IO (commons-io:commons-io:2.8.0 - https://commons.apache.org/proper/commons-io/)
      (Eclipse Public License 1.0) JUnit (junit:junit:4.13.2 - http://junit.org)
      (Unknown license) ext-as (net.jangaroo:ext-as:7.2.0-3 - http://nexus.sonatype.org/oss-repository-hosting.html/ext-as)

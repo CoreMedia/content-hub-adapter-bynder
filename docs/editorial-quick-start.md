@@ -121,6 +121,8 @@ Assets can be imported into the CoreMedia CMS by selecting the desired asset and
 
 ![Asset Import](images/editorial/editorial-documentation_4.png)  
 
+The name of the newly created CoreMedia document will equal the asset's name.
+
 Keep in mind that certain requirements on the connected Bynder account need to be met to allow download of full-size images to transfer them to the CoreMedia repository. See <https://bynder.docs.apiary.io/#reference/download/download-operations/retrieve-asset-download-location>. You may need to contact Bynder support to clarify settings for your Bynder account (refer to previous documentation URL for requirements when contacting Bynder support).
 
 ### Search
