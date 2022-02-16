@@ -98,6 +98,14 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
 
   @Nullable
   @Override
+  public ContentHubBlob getThumbnailBlob() {
+    String thumbnailUrl = getThumbnailUrl();
+    return thumbnailUrl == null ?
+            null : new UrlBlobBuilder(this, ContentHubBlob.THUMBNAIL_BLOB_CLASSIFIER).withUrl(thumbnailUrl).withEtag().build();
+  }
+
+  @Nullable
+  @Override
   public ContentHubBlob getBlob(String classifier) {
     ContentHubBlob blob = null;
     String blobUrl = null;
