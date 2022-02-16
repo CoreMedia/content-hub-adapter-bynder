@@ -32,9 +32,13 @@ multiple configured Content Hub Adapters in Studio (a connection on Content Hub 
 ## Types of Content Working with This Adapter
 - Images
   
-Other asset types will be shown but will produce an error when trying to import them.
+Only image formats _JPEG_, _PNG_, and _GIF_ are supported.
 
-## Browsing the Bynder Repository
+Only files originally uploaded to Bynder are considered. Additional files and derivatives are not supported.
+
+Other image formats or asset types will be shown but will produce an error when trying to import them.
+
+## Configuring the Bynder Repository
 Depending on the configuration of the adapter, the appearance of the tree may vary. The following sections 
 take care of all configuration **places** and **options**.
 
@@ -109,7 +113,7 @@ Folder contents are cached, so if new uploads to Bynder are missing, click butto
 
 ![Reload Bynder Contents](images/editorial/editorial-documentation_3.png)
 
-When an asset is selected, preview and detail information for the asset are available in the _Details_ section on the right-hand side:
+When an asset is selected, preview and detail information for the asset are available in the _Details_ section on the right-hand side. Only the currently active version of the asset will be considered here. If a newer version is available, you may need to click "_Reload Folder_" to be able to see its details (see above).
 
 ![Asset Details](images/editorial/editorial-documentation_5.png)  
 

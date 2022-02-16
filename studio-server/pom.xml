@@ -33,6 +33,11 @@
       <artifactId>cap-unified-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.coremedia.cms</groupId>
+      <artifactId>coremedia-common</artifactId>
+    </dependency>
+
     <!-- THIRD-PARTY dependencies -->
 
     <dependency>
@@ -74,6 +79,11 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.activation</groupId>
+      <artifactId>jakarta.activation</artifactId>
     </dependency>
 
     <!-- TEST dependencies -->

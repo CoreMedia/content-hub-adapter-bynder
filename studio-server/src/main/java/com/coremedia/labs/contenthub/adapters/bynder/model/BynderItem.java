@@ -1,11 +1,14 @@
 package com.coremedia.labs.contenthub.adapters.bynder.model;
 
 import com.coremedia.contenthub.api.*;
+import com.coremedia.contenthub.api.preview.DetailsElement;
+import com.coremedia.contenthub.api.preview.DetailsSection;
 import com.coremedia.labs.contenthub.adapters.bynder.service.BynderService;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.Entity;
 import com.coremedia.mimetype.MimeTypeService;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +18,8 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class BynderItem extends BynderContentHubObject implements Item {
 
@@ -42,6 +46,17 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
     this.type = type;
     this.bynderService = bynderService;
     this.mimeTypeService = mimeTypeService;
+  }
+
+  @Override
+  public String getName() {
+    return entity.getName();
+  }
+
+  @Nullable
+  @Override
+  public String getDescription() {
+    return entity.getDescription();
   }
 
   @Override
@@ -116,6 +131,45 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
     }
 
     return blob;
+  }
+
+  /**
+   * {@inheritDoc}
+   * <p>
+   * Default implementation for asset types for which no additional details are provided.
+   * </p>
+   */
+  @NonNull
+  @Override
+  public List<DetailsSection> getDetails() {
+    ContentHubBlob blob = null;
+    // this URL will *not* be used in Content Hub Preview (see https://documentation.coremedia.com/cmcc-10/artifacts/2107/webhelp/studio-developer-en/content/Content_Hub.html)
+    // correct preview delivery must be implemented through BynderItem#getBlob(String)
+    String previewUrl = getPreviewUrl();
+    if (StringUtils.isNotBlank(previewUrl)) {
+      blob = new UrlBlobBuilder(this, CLASSIFIER_PREVIEW).withUrl(previewUrl).build();
+    }
+
+    return List.of(
+            // Details
+            new DetailsSection("main", List.of(
+                    new DetailsElement<>(getName(), false, Objects.requireNonNullElse(blob, SHOW_TYPE_ICON)),
+                    new DetailsElement<>("copyright", entity.getCopyright()),
+                    new DetailsElement<>("description", entity.getDescription())
+            ), false, false, false),
+
+            // Metadata
+            new DetailsSection("metadata", List.of(
+                    new DetailsElement<>("id", entity.getId()),
+                    new DetailsElement<>("extension", entity.getExtension() != null ? String.join(", ", entity.getExtension()) : "-"),
+                    new DetailsElement<>("size", FileUtils.byteCountToDisplaySize(entity.getFileSize())),
+                    new DetailsElement<>("user", entity.getUserCreated()),
+                    new DetailsElement<>("tags", entity.getTags() != null ? String.join(", ", entity.getTags()) : "-"),
+                    new DetailsElement<>("dateCreated", getDateFormatted(entity.getDateCreated())),
+                    new DetailsElement<>("dateModified", getDateFormatted(entity.getDateModified())),
+                    new DetailsElement<>("datePublished", getDateFormatted(entity.getDatePublished()))
+            ))
+    );
   }
 
   protected String getDateFormatted(Date date) {

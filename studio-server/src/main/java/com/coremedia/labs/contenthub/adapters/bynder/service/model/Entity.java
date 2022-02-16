@@ -13,7 +13,10 @@ import java.util.List;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Image.class, name = Image.TYPE),
-        @JsonSubTypes.Type(value = Video.class, name = Video.TYPE)
+        @JsonSubTypes.Type(value = Video.class, name = Video.TYPE),
+        @JsonSubTypes.Type(value = Document.class, name = Document.TYPE),
+        @JsonSubTypes.Type(value = Audio.class, name = Audio.TYPE),
+        @JsonSubTypes.Type(value = ThreeD.class, name = ThreeD.TYPE)
 })
 public abstract class Entity {
 

@@ -9,13 +9,15 @@ import com.coremedia.labs.contenthub.adapters.bynder.service.BynderService;
 import com.coremedia.labs.contenthub.adapters.bynder.service.model.Image;
 import com.coremedia.mimetype.MimeTypeService;
 import edu.umd.cs.findbugs.annotations.NonNull;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Model representation of Bynder asset type "image".
+ */
 public class BynderImageItem extends BynderItem {
 
   private final Image image;
@@ -31,17 +33,6 @@ public class BynderImageItem extends BynderItem {
   @Override
   public String getCoreMediaContentType() {
     return "CMPicture";
-  }
-
-  @Override
-  public String getName() {
-    return image.getName();
-  }
-
-  @Nullable
-  @Override
-  public String getDescription() {
-    return image.getDescription();
   }
 
   @NonNull
