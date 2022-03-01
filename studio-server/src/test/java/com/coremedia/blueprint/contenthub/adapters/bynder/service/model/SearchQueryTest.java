@@ -1,11 +1,11 @@
 package com.coremedia.blueprint.contenthub.adapters.bynder.service.model;
 
-import com.coremedia.labs.contenthub.adapters.bynder.model.BynderContentHubType;
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.SearchQuery;
-import org.junit.Test;
+import com.coremedia.labs.plugins.adapters.bynder.model.BynderContentHubType;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.SearchQuery;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SearchQueryTest {
 

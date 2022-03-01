@@ -1,18 +1,24 @@
 package com.coremedia.blueprint.contenthub.adapters.bynder.service;
 
-import com.coremedia.labs.contenthub.adapters.bynder.model.BynderContentHubType;
-import com.coremedia.labs.contenthub.adapters.bynder.service.BynderService;
-import com.coremedia.labs.contenthub.adapters.bynder.service.model.*;
-import org.junit.Before;
-import org.junit.Test;
+import com.coremedia.labs.plugins.adapters.bynder.model.BynderContentHubType;
+import com.coremedia.labs.plugins.adapters.bynder.service.BynderService;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.Entity;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.Image;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.SearchQuery;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.SearchResult;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.Video;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BynderServiceIT {
 
   private BynderService testling;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testling = new BynderService("https://coremedia-sandbox.bynder.com/api/v4/",
             "7408c90ddc23f69504d46dd84f60791830d6befcee828797a4972f432ff53dd9");
