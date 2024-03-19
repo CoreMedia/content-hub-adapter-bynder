@@ -1,5 +1,12 @@
 Changelog
 ================================================================================
+## 2.0.1
+
+- Introduced subfolders `Assets`, `Collections` and `Tags`
+  - `Assets`: allows to browse and search across all assets
+  - `Collections`: shows all public collections and the containing assets
+  - `Tags`: shows all tags and the assets that are tagged with the tag
+- Refactored search functionality
 
 ## 2.0.0
 
