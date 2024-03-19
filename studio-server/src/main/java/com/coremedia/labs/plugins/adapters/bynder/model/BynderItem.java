@@ -76,7 +76,7 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
     if (StringUtils.isNotBlank(entity.getOriginal())) {
       return entity.getOriginal();
     } else {
-      return bynderService.getAssetDownloadById(entity.getId());
+      return bynderService.getAssetDownloadById(entity.getId()).orElse(null);
     }
   }
 
