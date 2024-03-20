@@ -7,6 +7,7 @@ Changelog
   - `Collections`: shows all public collections and the containing assets
   - `Tags`: shows all tags and the assets that are tagged with the tag
 - Refactored search functionality
+- Compatible CoreMedia Content Cloud version: `2110.2`
 
 ## 2.0.0
 
