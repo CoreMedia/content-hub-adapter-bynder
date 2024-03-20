@@ -10,6 +10,8 @@ interface ContentHubBynder_properties {
   adapter_type_bynder_name: string;
   adapter_type_bynder_icon: string;
 
+  folder_type_portal_name: string;
+  folder_type_portal_icon: string;
   folder_type_collection_name: string;
   folder_type_collection_icon: string;
   folder_type_tag_name: string;
@@ -46,6 +48,8 @@ const ContentHubBynder_properties: ContentHubBynder_properties = {
   adapter_type_bynder_name: "Bynder",
   adapter_type_bynder_icon: SvgIconUtil.getIconStyleClassForSvgIcon(icon),
 
+  folder_type_portal_name: "Portal",
+  folder_type_portal_icon: SvgIconUtil.getIconStyleClassForSvgIcon(icon),
   folder_type_collection_name: "Collection",
   folder_type_collection_icon: CoreIcons_properties.type_image_gallery,
   folder_type_tag_name: "Tag",

@@ -45,7 +45,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
     this.mimeTypeService = mimeTypeService;
 
     // base folders
-    rootFolder = new BynderFolder(new ContentHubObjectId(connectionId, "root"), settings.getDisplayName(), BynderContentHubType.FOLDER);
+    rootFolder = new BynderFolder(new ContentHubObjectId(connectionId, "root"), settings.getDisplayName(), BynderContentHubType.PORTAL_FOLDER);
     assetsFolder = new BynderFolder(new ContentHubObjectId(connectionId, "assets"), "Assets", BynderContentHubType.FOLDER);
     collectionsFolder = new BynderFolder(new ContentHubObjectId(connectionId, "collections"), "Collections", BynderContentHubType.FOLDER);
     tagsFolder = new BynderFolder(new ContentHubObjectId(connectionId, "tags"), "Tags", BynderContentHubType.FOLDER);
