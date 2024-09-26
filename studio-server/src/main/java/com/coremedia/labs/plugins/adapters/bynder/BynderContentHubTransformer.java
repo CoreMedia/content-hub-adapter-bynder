@@ -3,6 +3,7 @@ package com.coremedia.labs.plugins.adapters.bynder;
 import com.coremedia.contenthub.api.*;
 import com.coremedia.labs.plugins.adapters.bynder.model.BynderImageItem;
 import com.coremedia.labs.plugins.adapters.bynder.model.BynderItem;
+import com.coremedia.labs.plugins.adapters.bynder.model.BynderVideoItem;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
       contentModel.put(PROPERTY_DETAIL_TEXT, ContentCreationUtil.convertStringToRichtext(description));
     }
 
-    if (item instanceof BynderImageItem) {
+    if (item instanceof BynderImageItem || item instanceof BynderVideoItem) {
       ContentHubBlob blob = item.getBlob(BynderItem.CLASSIFIER_ORIGINAL);
       if (blob != null) {
         contentModel.put(PROPERTY_DATA, blob);

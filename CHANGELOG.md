@@ -1,5 +1,11 @@
-Changelog
-================================================================================
+# Changelog
+
+## 2.0.3
+
+- Adapter can now also import videos from Bynder
+  - when importing a video, the video data is copied to CoreMedia and a `CMVideo` content is created
+- Compatible CoreMedia Content Cloud version: `2401.3`
+
 ## 2.0.2
 
 - Use Java 17 SDK
