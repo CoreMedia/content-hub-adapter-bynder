@@ -188,4 +188,8 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
     }
     return "-";
   }
+
+  public List<String> getExtension() {
+    return entity.getExtension();
+  }
 }

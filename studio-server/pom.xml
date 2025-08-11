@@ -98,6 +98,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.coremedia.cms</groupId>
+      <artifactId>cap-unified-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-core</artifactId>
       <scope>provided</scope>
