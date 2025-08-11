@@ -68,36 +68,36 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
           contentModel.put(PROPERTY_DATA, blob);
         }
       }
-
-      if (settings.getExternalReferenceModeEnabled()) {
-
-        StructBuilder assetInfoStructBuilder = structService.createStructBuilder();
-        assetInfoStructBuilder.declareString(PROPERTY_ID, 1024, item.getId().getExternalId());
-        List<String> extensions = item.getExtension();
-        if(extensions != null) {
-          assetInfoStructBuilder.declareStrings(PROPERTY_EXTENSION, 1024, extensions);
-        }
-
-        if (item instanceof BynderImageItem) {
-          // For images, store the transform base url property, which we can append parameters to later
-          BynderImageItem bynderImageItem = (BynderImageItem) item;
-          contentModel.put(PROPERTY_DATA_URL, bynderImageItem.getTransformBaseUrl());
-          assetInfoStructBuilder.declareInteger(PROPERTY_WIDTH, bynderImageItem.getImageBaseWidth());
-          assetInfoStructBuilder.declareInteger(PROPERTY_HEIGHT, bynderImageItem.getImageBaseHeight());
-          if(settings.getThumbnailImportModeEnabled()) {
-            assetInfoStructBuilder.declareBoolean(PROPERTY_IS_THUMBNAIL_MODE, Boolean.valueOf(true));
-          }
-        } else {
-          // For videos, the data URL is what we want
-          contentModel.put(PROPERTY_DATA_URL, item.getDataUrl());
-        }
-
-        StructBuilder localSettingsStructBuilder = structService.createStructBuilder();
-        localSettingsStructBuilder.declareStruct(PROPERTY_ASSET_INFO_STRUCT, assetInfoStructBuilder.build());
-        contentModel.put(PROPERTY_LOCAL_SETTINGS, localSettingsStructBuilder.build());
-      }
     } else {
       throw new IllegalArgumentException("transformation of type " + item.getClass().getName() + " not yet implemented");
+    }
+
+    if (settings.getExternalReferenceModeEnabled()) {
+
+      StructBuilder assetInfoStructBuilder = structService.createStructBuilder();
+      assetInfoStructBuilder.declareString(PROPERTY_ID, 1024, item.getId().getExternalId());
+      List<String> extensions = item.getExtension();
+      if(extensions != null) {
+        assetInfoStructBuilder.declareStrings(PROPERTY_EXTENSION, 1024, extensions);
+      }
+
+      if (item instanceof BynderImageItem) {
+        // For images, store the transform base url property, which we can append parameters to later
+        BynderImageItem bynderImageItem = (BynderImageItem) item;
+        contentModel.put(PROPERTY_DATA_URL, bynderImageItem.getTransformBaseUrl());
+        assetInfoStructBuilder.declareInteger(PROPERTY_WIDTH, bynderImageItem.getImageBaseWidth());
+        assetInfoStructBuilder.declareInteger(PROPERTY_HEIGHT, bynderImageItem.getImageBaseHeight());
+        if(settings.getThumbnailImportModeEnabled()) {
+          assetInfoStructBuilder.declareBoolean(PROPERTY_IS_THUMBNAIL_MODE, Boolean.valueOf(true));
+        }
+      } else if (item instanceof BynderVideoItem) {
+        // For videos, the data URL is what we want
+        contentModel.put(PROPERTY_DATA_URL, item.getDataUrl());
+      }
+
+      StructBuilder localSettingsStructBuilder = structService.createStructBuilder();
+      localSettingsStructBuilder.declareStruct(PROPERTY_ASSET_INFO_STRUCT, assetInfoStructBuilder.build());
+      contentModel.put(PROPERTY_LOCAL_SETTINGS, localSettingsStructBuilder.build());
     }
 
     return contentModel;
