@@ -5,6 +5,6 @@ public interface BynderContentHubSettings {
   String getApiEndpoint();
   String getAccessToken();
   String getDisplayName();
-  boolean getExternalReferenceModeEnabled();
-  boolean getThumbnailImportModeEnabled();
+  Boolean getExternalReferenceModeEnabled();
+  Boolean getThumbnailImportModeEnabled();
 }

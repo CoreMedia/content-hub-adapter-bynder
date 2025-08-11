@@ -59,7 +59,7 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
 
     if (item instanceof BynderImageItem || item instanceof BynderVideoItem) {
 
-      if(item instanceof BynderImageItem && settings.getThumbnailImportModeEnabled()) {
+      if(item instanceof BynderImageItem && (settings.getThumbnailImportModeEnabled() != null && settings.getThumbnailImportModeEnabled())) {
         contentModel.put(PROPERTY_DATA, item.getThumbnailBlob());
       }
       else {
@@ -72,7 +72,7 @@ public class BynderContentHubTransformer implements ContentHubTransformer {
       throw new IllegalArgumentException("transformation of type " + item.getClass().getName() + " not yet implemented");
     }
 
-    if (settings.getExternalReferenceModeEnabled()) {
+    if (settings.getExternalReferenceModeEnabled() != null && settings.getExternalReferenceModeEnabled()) {
 
       StructBuilder assetInfoStructBuilder = structService.createStructBuilder();
       assetInfoStructBuilder.declareString(PROPERTY_ID, 1024, item.getId().getExternalId());
