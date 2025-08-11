@@ -86,11 +86,13 @@ Initially, struct _settings_ is empty.
 The  struct  holds specific configuration options for the connector. Select struct _settings_ and click "_Add String_" for each entry.
 The table below depicts all potential entries. 
 
-| Key               | Type       | Description                                                    | Required   | 
-|---------------    |------------|------------                                              |------------|
-| displayName       | String     | Name of the connection's root folder to display in Studio             | No         |
-| apiEndpoint         | String     | URL of Bynder REST API endpoint including API base path _(/api/v4/)_         | Yes         |
-| accessToken            | String     | Access Token for Bynder account          | Yes         |
+| Key               | Type    | Description                                                                                             | Required | 
+|---------------    |---------|---------------------------------------------------------------------------------------------------------|----------|
+| displayName       | String  | Name of the connection's root folder to display in Studio                                               | No       |
+| apiEndpoint         | String  | URL of Bynder REST API endpoint including API base path _(/api/v4/)_                                    | Yes      |
+| accessToken            | String  | Access Token for Bynder account                                                                         | Yes      |
+| externalReferenceModeEnabled | Boolean | Import URL and metadata, allowing Bynder to host and deliver the asset                                  | No       |
+| thumbnailImportModeEnabled | Boolean | Import only the thumbnail of images, allowing studio to show the thumbnail but keep the file size small | No       |
 
 For the creation of Bynder access tokens, refer to Bynder support article [Permanent Tokens](https://support.bynder.com/hc/en-us/articles/360013875300).
 
