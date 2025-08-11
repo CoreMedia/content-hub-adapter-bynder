@@ -1,5 +1,6 @@
 package com.coremedia.labs.plugins.adapters.bynder;
 
+import com.coremedia.cap.struct.StructService;
 import com.coremedia.contenthub.api.*;
 import com.coremedia.contenthub.api.column.ColumnProvider;
 import com.coremedia.contenthub.api.exception.ContentHubException;
@@ -39,10 +40,14 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
   private final BynderFolder tagsFolder;
   private final BynderColumnProvider columnProvider;
   private final MimeTypeService mimeTypeService;
+  private final StructService structService;
+  private final BynderContentHubSettings bynderContentHubSettings;
 
-  public BynderContentHubAdapter(BynderContentHubSettings settings, String connectionId, MimeTypeService mimeTypeService) {
+  public BynderContentHubAdapter(BynderContentHubSettings settings, String connectionId, MimeTypeService mimeTypeService, StructService structService) {
     this.connectionId = connectionId;
     this.mimeTypeService = mimeTypeService;
+    this.structService = structService;
+    this.bynderContentHubSettings = settings;
 
     // base folders
     rootFolder = new BynderFolder(new ContentHubObjectId(connectionId, "root"), settings.getDisplayName(), BynderContentHubType.PORTAL_FOLDER);
@@ -194,7 +199,7 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
 
   @Override
   public ContentHubTransformer transformer() {
-    return new BynderContentHubTransformer();
+    return new BynderContentHubTransformer(bynderContentHubSettings, structService);
   }
 
 

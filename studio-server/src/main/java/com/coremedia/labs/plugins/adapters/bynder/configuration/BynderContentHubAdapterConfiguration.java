@@ -1,5 +1,6 @@
 package com.coremedia.labs.plugins.adapters.bynder.configuration;
 
+import com.coremedia.cap.struct.StructService;
 import com.coremedia.labs.plugins.adapters.bynder.BynderContentHubAdapterFactory;
 import com.coremedia.labs.plugins.adapters.bynder.BynderContentHubSettings;
 import com.coremedia.contenthub.api.ContentHubAdapterFactory;
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Import;
 public class BynderContentHubAdapterConfiguration {
 
   @Bean
-  public ContentHubAdapterFactory<BynderContentHubSettings> bynderContentHubAdapterFactory(MimeTypeService mimeTypeService) {
-    return new BynderContentHubAdapterFactory(mimeTypeService);
+  public ContentHubAdapterFactory<BynderContentHubSettings> bynderContentHubAdapterFactory(MimeTypeService mimeTypeService, StructService structService) {
+    return new BynderContentHubAdapterFactory(mimeTypeService, structService);
   }
 }
