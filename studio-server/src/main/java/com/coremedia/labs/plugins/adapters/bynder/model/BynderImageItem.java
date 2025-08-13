@@ -68,4 +68,17 @@ public class BynderImageItem extends BynderItem {
             ))
     );
   }
+
+  public String getTransformBaseUrl() {
+    return image.getTransformBaseUrl();
+  }
+
+  public Integer getImageBaseWidth() {
+    return image.getWidth();
+  }
+
+  public Integer getImageBaseHeight() {
+    return image.getHeight();
+  }
+
 }
