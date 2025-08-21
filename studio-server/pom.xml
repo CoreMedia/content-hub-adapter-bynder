@@ -102,6 +102,11 @@
       <artifactId>cap-unified-api</artifactId>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>com.coremedia.cms</groupId>
+          <artifactId>common.beans-for-plugins</artifactId>
+          <!-- scope: compile is necessary-->
+      </dependency>
     <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-core</artifactId>
