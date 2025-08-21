@@ -1,5 +1,6 @@
 package com.coremedia.labs.plugins.adapters.bynder;
 
+import com.coremedia.cap.common.CapConnection;
 import com.coremedia.cap.struct.StructService;
 import com.coremedia.contenthub.api.ContentHubAdapter;
 import com.coremedia.contenthub.api.ContentHubAdapterFactory;
@@ -13,11 +14,11 @@ public class BynderContentHubAdapterFactory implements ContentHubAdapterFactory<
   private static final String ADAPTER_ID = "bynder";
 
   private final MimeTypeService mimeTypeService;
-  private final StructService structService;
+  private final CapConnection connection;
 
-  public BynderContentHubAdapterFactory(@NonNull MimeTypeService mimeTypeService, @NonNull StructService structService) {
+  public BynderContentHubAdapterFactory(@NonNull MimeTypeService mimeTypeService, @NonNull CapConnection connection) {
     this.mimeTypeService = mimeTypeService;
-    this.structService = structService;
+    this.connection = connection;
   }
 
   @Override
@@ -28,6 +29,6 @@ public class BynderContentHubAdapterFactory implements ContentHubAdapterFactory<
   @Override
   public ContentHubAdapter createAdapter(@NonNull BynderContentHubSettings settings,
                                          @NonNull String connectionId) {
-    return new BynderContentHubAdapter(settings, connectionId, mimeTypeService, structService);
+    return new BynderContentHubAdapter(settings, connectionId, mimeTypeService, connection);
   }
 }
