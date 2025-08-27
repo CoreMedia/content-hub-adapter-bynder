@@ -1,19 +1,25 @@
 # Changelog
 
-## 2.0.3
+## 2.0.5
+- Updated dependencies
+- Removed deprecated import of `BaseFileSystemConfiguration`
+- Compatible CoreMedia Content Cloud version: `2506.0.0`
 
+## 2.0.4
+- Bugfixes
+- Compatible CoreMedia Content Cloud version: `2401.3`
+
+## 2.0.3
 - Adapter can now also import videos from Bynder
   - when importing a video, the video data is copied to CoreMedia and a `CMVideo` content is created
 - Compatible CoreMedia Content Cloud version: `2401.3`
 
 ## 2.0.2
-
 - Use Java 17 SDK
 - Use Node 18.x
 - Compatible CoreMedia Content Cloud version: `2401.3`
 
 ## 2.0.1
-
 - Introduced subfolders `Assets`, `Collections` and `Tags`
   - `Assets`: allows to browse and search across all assets
   - `Collections`: shows all public collections and the containing assets
@@ -22,7 +28,6 @@
 - Compatible CoreMedia Content Cloud version: `2110.2`
 
 ## 2.0.0
-
 - Refactored adapter to CoreMedia Application Plugin
 - Added thumbnail support
 - Updated documentation
@@ -36,8 +41,6 @@
 - Compatible CoreMedia Content Cloud version: `2110.2`
 
 ## 1.0.0
-
-### Initial Release 🥳
-
+**Initial Release** 🥳
 - Basic implementation of the Content Hub Adapter for Bynder.
 - Compatible CoreMedia Content Cloud version: `2101.1`
