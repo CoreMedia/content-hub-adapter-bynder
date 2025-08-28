@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.activation.MimeType;
+import jakarta.activation.MimeType;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -76,7 +76,7 @@ public abstract class BynderItem extends BynderContentHubObject implements Item 
     if (StringUtils.isNotBlank(entity.getOriginal())) {
       return entity.getOriginal();
     } else {
-      return bynderService.getAssetDownloadById(entity.getId());
+      return bynderService.getAssetDownloadById(entity.getId()).orElse(null);
     }
   }
 

@@ -6,6 +6,9 @@ public enum BynderContentHubType {
 
   ALL(new ContentHubType("all")),
   FOLDER(new ContentHubType("folder")),
+  PORTAL_FOLDER(new ContentHubType("portal")),
+  COLLECTION_FOLDER(new ContentHubType("collection")),
+  TAG_FOLDER(new ContentHubType("tag")),
   IMAGE(new ContentHubType("image")),
   VIDEO(new ContentHubType("video")),
   DOCUMENT(new ContentHubType("document")),

@@ -3,9 +3,11 @@ package com.coremedia.labs.plugins.adapters.bynder.model;
 import com.coremedia.contenthub.api.ContentHubObjectId;
 import com.coremedia.labs.plugins.adapters.bynder.service.BynderService;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.Audio;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.Collection;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.Document;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.Entity;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.Image;
+import com.coremedia.labs.plugins.adapters.bynder.service.model.Tag;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.ThreeD;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.Video;
 import com.coremedia.mimetype.MimeTypeService;
@@ -38,4 +40,13 @@ public class BynderItemFactory {
               ", unknown asset type " + asset.getClass().getName());
     }
   }
+
+  public static BynderCollectionFolder createCollectionFolder(ContentHubObjectId id, Collection collection) {
+    return new BynderCollectionFolder(id, collection);
+  }
+
+  public static BynderTagFolder createTagFolder(ContentHubObjectId id, Tag tag) {
+    return new BynderTagFolder(id, tag);
+  }
+
 }
