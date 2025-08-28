@@ -86,8 +86,13 @@ jobs:
         env:
           PLUGINS_NEXUS_USER: ${{ secrets.PLUGINS_NEXUS_USER }}
           PLUGINS_NEXUS_PASSWORD: ${{ secrets.PLUGINS_NEXUS_PASSWORD }}
+#        run: |
+#          version=$(mvn --batch-mode org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
+#          echo "::set-output name=version::${version}"
         run: |
+          echo "Debug: PLUGINS_NEXUS_USER is set: ${{ secrets.PLUGINS_NEXUS_USER != '' }}"
           version=$(mvn --batch-mode org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Debug: Extracted version: '${version}'"
           echo "::set-output name=version::${version}"
 
       - name: Build with Pnpm
@@ -105,7 +110,7 @@ jobs:
       - name: Create Bundle
         env:
           VERSION: ${{ steps.output-version.outputs.version }}
-          DESCRIPTOR_TEMPLATE: 'content-hub-adapter-bynder.json'
+          DESCRIPTOR_TEMPLATE: 'content-hub-adapter-bynder-cm11.json'
           CREATE_RELEASE: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
           RELEASE_TAG: ${{ steps.set-release-version.outputs.tag }}
           URL_PATTERN: 'https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${REL_FILE}'
@@ -117,6 +122,13 @@ jobs:
             FILE_TEMPLATE=$(cat ${DESCRIPTOR_TEMPLATE} | jq -r --arg APP "${APP}" '.plugins[$APP].file')
             FILE=$(eval echo ${FILE_TEMPLATE})
             REL_FILE=$(echo "${FILE}" | sed 's#.*/##g')
+            echo "Debugging ....."
+            echo "File Template: "
+            echo ${FILE_TEMPLATE}
+            echo "Version " ${VERSION}
+            ls -la studio-client/apps/main/content-hub-adapter-bynder/build/
+            echo ${FILE}
+            echo "End Debugging ....."
             cp "${FILE}" target/bundle
             if [ "${CREATE_RELEASE}" = true ]; then
               URL=$(eval echo ${URL_PATTERN})
@@ -154,8 +166,8 @@ jobs:
           if-no-files-found: error
 
       - name: Upload Release Artifacts
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/cmcc11-external-assets'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.set-release-version.outputs.version }}
+          tag_name: v-cm11-${{ steps.set-snapshot-version.outputs.version }}
           files: target/bundle/*
