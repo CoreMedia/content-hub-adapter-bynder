@@ -2,9 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [ cmcc11-external-assets ]
   workflow_dispatch:
 
 jobs:
@@ -48,7 +46,7 @@ jobs:
           npm install -g pnpm@8
 
       - name: Setup Git
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/cmcc11-external-assets'
         run: |
           git config --global user.name 'coremedia-ci'
           git config --global user.email 'coremedia-ci@coremedia.com'
@@ -62,7 +60,7 @@ jobs:
 
       - name: Set Release Version
         id: set-release-version
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/cmcc11-external-assets'
         env:
           PLUGINS_NEXUS_USER: ${{ secrets.PLUGINS_NEXUS_USER }}
           PLUGINS_NEXUS_PASSWORD: ${{ secrets.PLUGINS_NEXUS_PASSWORD }}
@@ -111,7 +109,7 @@ jobs:
         env:
           VERSION: ${{ steps.output-version.outputs.version }}
           DESCRIPTOR_TEMPLATE: 'content-hub-adapter-bynder-cm11.json'
-          CREATE_RELEASE: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+          CREATE_RELEASE: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/cmcc11-external-assets' }}
           RELEASE_TAG: ${{ steps.set-release-version.outputs.tag }}
           URL_PATTERN: 'https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${REL_FILE}'
         run: |
@@ -122,13 +120,6 @@ jobs:
             FILE_TEMPLATE=$(cat ${DESCRIPTOR_TEMPLATE} | jq -r --arg APP "${APP}" '.plugins[$APP].file')
             FILE=$(eval echo ${FILE_TEMPLATE})
             REL_FILE=$(echo "${FILE}" | sed 's#.*/##g')
-            echo "Debugging ....."
-            echo "File Template: "
-            echo ${FILE_TEMPLATE}
-            echo "Version " ${VERSION}
-            ls -la studio-client/apps/main/content-hub-adapter-bynder/build/
-            echo ${FILE}
-            echo "End Debugging ....."
             cp "${FILE}" target/bundle
             if [ "${CREATE_RELEASE}" = true ]; then
               URL=$(eval echo ${URL_PATTERN})
