@@ -76,7 +76,7 @@ jobs:
 
           git add .
           git commit -m "set release version: ${release_version}"
-          release_tag="v${release_version}"
+          release_tag="v-cm11-${release_version}"
           git tag "${release_tag}"
           echo "::set-output name=version::${release_version}"
           echo "::set-output name=tag::${release_tag}"
@@ -169,5 +169,5 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/cmcc11-external-assets'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v-cm11-${{ steps.set-snapshot-version.outputs.version }}
+          tag_name: v-cm11-${{ steps.set-release-version.outputs.version }}
           files: target/bundle/*
