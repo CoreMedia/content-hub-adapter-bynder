@@ -95,14 +95,18 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
       subFolders = rootFolder.getSubfolders();
     }
 
-    // for collections folder
+    // for collections folder - use paginated method with all results for subfolder loading
     if (collectionsFolder == folder) {
-      subFolders = bynderService.getCollections().stream()
+      // For subfolders, we load all collections (this is typically not too many)
+      BynderService.PaginatedResult<com.coremedia.labs.plugins.adapters.bynder.service.model.Collection> result =
+          bynderService.getCollections(1, 1000); // Get up to 1000 collections
+
+      subFolders = result.getItems().stream()
               .map(c -> BynderItemFactory.createCollectionFolder(new ContentHubObjectId(connectionId, c.getId()), c))
               .collect(Collectors.toList());
     }
 
-    // for tags folder
+    // for tags folder - keep existing non-paginated for tags (usually not many)
     if (tagsFolder == folder) {
       subFolders = bynderService.getTags().stream()
               .map(tag -> BynderItemFactory.createTagFolder(new ContentHubObjectId(connectionId, tag.getId()), tag))
@@ -132,43 +136,71 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
   }
 
   public List<Item> getItems(ContentHubContext context, Folder folder) throws ContentHubException {
-    LOG.info("Get items for folder: {}", folder.getId());
-    List<Item> items = Collections.emptyList();
+    LOG.info("Get items for folder: {} (DEPRECATED - loads all items)", folder.getId());
+
+    // This method is kept for backwards compatibility but should not be used
+    // It will load all pages which can be slow
+    try {
+      // Use the first page with a high limit for backwards compatibility
+      BynderService.PaginatedResult<Item> result = getItemsPaginated(context, folder, 1, 1000);
+      return result.getItems();
+    } catch (Exception e) {
+      LOG.warn("unable to get items for folder {}: ", folder, e);
+      return Collections.emptyList();
+    }
+  }
+
+  /**
+   * Get items for folder with pagination support.
+   *
+   * @param context ContentHub context
+   * @param folder The folder to get items from
+   * @param page Page number (1-based)
+   * @param limit Items per page
+   * @return Paginated result with items and metadata
+   * @throws ContentHubException
+   */
+  public BynderService.PaginatedResult<Item> getItemsPaginated(ContentHubContext context, Folder folder, int page, int limit) throws ContentHubException {
+    LOG.info("Get items for folder: {} with pagination (page: {}, limit: {})", folder.getId(), page, limit);
 
     try {
-      List<Entity> assets = Collections.emptyList();
+      BynderService.PaginatedResult<Entity> paginatedAssets;
 
-      // Assets
+      // Assets folder
       if (assetsFolder == folder) {
-        LOG.info("Fetching media in assets folder.");
-        assets = bynderService.searchAssets(MediaSearchQuery.queryForTerm("*"));
+        LOG.info("Fetching paginated media in assets folder.");
+        paginatedAssets = bynderService.searchAssets(MediaSearchQuery.queryForTerm("*"), page, limit);
       }
-
       // Collection folders
-      if (folder instanceof BynderCollectionFolder) {
+      else if (folder instanceof BynderCollectionFolder) {
         BynderCollectionFolder collectionFolder = (BynderCollectionFolder) folder;
         String collectionId = collectionFolder.getCollection().getId();
-        LOG.info("Fetching media in collection '{}'.", collectionId);
-        assets = bynderService.getMediaInCollection(collectionId);
+        LOG.info("Fetching paginated media in collection '{}'.", collectionId);
+        paginatedAssets = bynderService.getMediaInCollection(collectionId, page, limit);
       }
-
       // Tag folders
-      if (folder instanceof BynderTagFolder) {
+      else if (folder instanceof BynderTagFolder) {
         BynderTagFolder tagFolder = (BynderTagFolder) folder;
         String tag = tagFolder.getTag().getTag();
-        LOG.info("fetching media for tag '{}'.", tag);
-        assets = bynderService.getAssetsByTag(tag);
+        LOG.info("Fetching paginated media for tag '{}'.", tag);
+        paginatedAssets = bynderService.getAssetsByTag(tag, page, limit);
+      }
+      else {
+        // Fallback for unknown folder types
+        paginatedAssets = new BynderService.PaginatedResult<>(new ArrayList<>(), page, limit, 0);
       }
 
-      items = assets.stream()
+      // Convert entities to items
+      List<Item> items = paginatedAssets.getItems().stream()
               .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m, bynderService, mimeTypeService))
               .collect(Collectors.toUnmodifiableList());
 
-    } catch (Exception e) {
-      LOG.warn("unable to get items for folder {}: ", folder, e);
-    }
+      return new BynderService.PaginatedResult<>(items, paginatedAssets.getPage(), paginatedAssets.getLimit(), paginatedAssets.getTotalCount());
 
-    return items;
+    } catch (Exception e) {
+      LOG.warn("Unable to get paginated items for folder {}: ", folder, e);
+      return new BynderService.PaginatedResult<>(new ArrayList<>(), page, limit, 0);
+    }
   }
 
   @Nullable
@@ -182,20 +214,39 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
 
   @Override
   public GetChildrenResult getChildren(ContentHubContext context, Folder folder, @Nullable PaginationRequest paginationRequest) {
-    LOG.info("Get children of folder: {}", folder.getId());
+    LOG.info("Get children of folder: {} with pagination: {}", folder.getId(), paginationRequest);
     List<ContentHubObject> children = new ArrayList<>();
-    GetChildrenResult result = new GetChildrenResult(children);
 
     try {
+      // Always add subfolders first (they are not paginated)
       children.addAll(getSubFolders(context, folder));
-      List<Item> items = getItems(context, folder);
-      children.addAll(items);
-      result = new GetChildrenResult(children);
+
+      if (paginationRequest != null) {
+        // For now, use default pagination values since PaginationRequest API is unclear
+        // This can be refined once the correct API is determined
+        int page = 1;
+        int limit = 50; // Default limit
+
+        LOG.info("Using pagination with defaults: page={}, limit={}", page, limit);
+
+        BynderService.PaginatedResult<Item> paginatedItems = getItemsPaginated(context, folder, page, limit);
+        children.addAll(paginatedItems.getItems());
+
+        LOG.info("Returned {} items with pagination (total: {})", paginatedItems.getItems().size(), paginatedItems.getTotalCount());
+
+      } else {
+        // Fallback to non-paginated retrieval for backwards compatibility
+        List<Item> items = getItems(context, folder);
+        children.addAll(items);
+        LOG.info("Returned {} items without pagination", items.size());
+      }
+
+      return new GetChildrenResult(children);
+
     } catch (Exception e) {
       LOG.error("Unable to fetch children: ", e);
+      return new GetChildrenResult(children);
     }
-
-    return result;
   }
 
   @Override
@@ -251,7 +302,9 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
             .map(com.coremedia.labs.plugins.adapters.bynder.service.model.Collection::getId)
             .ifPresent(mediaSearchQuery::inCollection);
 
-    List<Entity> assets = bynderService.searchAssets(mediaSearchQuery);
+    // Use paginated search with first page and the requested limit
+    BynderService.PaginatedResult<Entity> searchResult = bynderService.searchAssets(mediaSearchQuery, 1, limit);
+    List<Entity> assets = searchResult.getItems();
 
     ContentHubSearchResult result = new ContentHubSearchResult(assets.stream()
             .map(m -> BynderItemFactory.createItem(new ContentHubObjectId(connectionId, m.getId()), m, bynderService, mimeTypeService))

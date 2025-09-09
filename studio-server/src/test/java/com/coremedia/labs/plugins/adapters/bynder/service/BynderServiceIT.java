@@ -31,11 +31,13 @@ public class BynderServiceIT {
   public void testSearchImages() {
     int limit = 3;
     MediaSearchQuery mediaSearchQuery = MediaSearchQuery.queryForTerm("summer").withType(BynderContentHubType.IMAGE.getType()).withLimit(limit);
-    List<Entity> hits = testling.searchAssets(mediaSearchQuery);
-    assertNotNull(hits);
-    assertFalse(hits.isEmpty());
-    assertEquals(limit, hits.size());
-    assertTrue(hits.get(0) instanceof Image);
+    BynderService.PaginatedResult<Entity> result = testling.searchAssets(mediaSearchQuery, 1, limit);
+    assertNotNull(result);
+    assertNotNull(result.getItems());
+    assertFalse(result.getItems().isEmpty());
+    assertEquals(limit, result.getItems().size());
+    assertTrue(result.getItems().get(0) instanceof Image);
+    assertTrue(result.getTotalCount() > 0);
   }
 
   @Test
@@ -50,10 +52,12 @@ public class BynderServiceIT {
   @Test
   public void testSearchVideos() {
     MediaSearchQuery mediaSearchQuery = MediaSearchQuery.queryForTerm("summer").withType(BynderContentHubType.VIDEO.getType());
-    List<Entity> hits = testling.searchAssets(mediaSearchQuery);
-    assertNotNull(hits);
-    assertFalse(hits.isEmpty());
-    assertTrue(hits.get(0) instanceof Video);
+    BynderService.PaginatedResult<Entity> result = testling.searchAssets(mediaSearchQuery, 1, 50);
+    assertNotNull(result);
+    assertNotNull(result.getItems());
+    assertFalse(result.getItems().isEmpty());
+    assertTrue(result.getItems().get(0) instanceof Video);
+    assertTrue(result.getTotalCount() > 0);
   }
 
   @Test
@@ -67,8 +71,11 @@ public class BynderServiceIT {
 
   @Test
   public void testGetCollections() {
-    List<Collection> collections = testling.getCollections();
-    assertEquals(2, collections.size());
+    BynderService.PaginatedResult<Collection> result = testling.getCollections(1, 50);
+    assertNotNull(result);
+    assertNotNull(result.getItems());
+    assertEquals(2, result.getItems().size());
+    assertTrue(result.getTotalCount() >= 2);
   }
 
   @Test
@@ -87,8 +94,56 @@ public class BynderServiceIT {
   @Test
   public void testGetAssetsByTags() {
     String tag = "Earrings";
-    List<Entity> assets = testling.getAssetsByTags(List.of(tag));
-    assertEquals(3, assets.size());
+    BynderService.PaginatedResult<Entity> result = testling.getAssetsByTag(tag, 1, 50);
+    assertNotNull(result);
+    assertNotNull(result.getItems());
+    assertEquals(3, result.getItems().size());
+    assertTrue(result.getTotalCount() >= 3);
   }
 
+  @Test
+  public void testPaginationBehavior() {
+    // Test pagination with smaller page size
+    MediaSearchQuery mediaSearchQuery = MediaSearchQuery.queryForTerm("*");
+
+    // Get first page with 2 items
+    BynderService.PaginatedResult<Entity> page1 = testling.searchAssets(mediaSearchQuery, 1, 2);
+    assertNotNull(page1);
+    assertEquals(2, page1.getItems().size());
+    assertEquals(1, page1.getPage());
+    assertEquals(2, page1.getLimit());
+
+    // Get second page with 2 items
+    BynderService.PaginatedResult<Entity> page2 = testling.searchAssets(mediaSearchQuery, 2, 2);
+    assertNotNull(page2);
+    assertEquals(2, page2.getItems().size());
+    assertEquals(2, page2.getPage());
+    assertEquals(2, page2.getLimit());
+
+    // Ensure different items on different pages
+    assertFalse(page1.getItems().get(0).getId().equals(page2.getItems().get(0).getId()));
+
+    // Both pages should have same total count
+    assertEquals(page1.getTotalCount(), page2.getTotalCount());
+  }
+
+  @Test
+  public void testCollectionPagination() {
+    // Test collection pagination
+    BynderService.PaginatedResult<Collection> page1 = testling.getCollections(1, 1);
+    assertNotNull(page1);
+    assertEquals(1, page1.getItems().size());
+    assertEquals(1, page1.getPage());
+    assertEquals(1, page1.getLimit());
+
+    if (page1.getTotalCount() > 1) {
+      BynderService.PaginatedResult<Collection> page2 = testling.getCollections(2, 1);
+      assertNotNull(page2);
+      assertEquals(1, page2.getItems().size());
+      assertEquals(2, page2.getPage());
+
+      // Different collections on different pages
+      assertFalse(page1.getItems().get(0).getId().equals(page2.getItems().get(0).getId()));
+    }
+  }
 }

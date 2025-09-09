@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class BynderService {
   /**
    * Retrieves a single asset.
    *
-   * @param assetId The asset’s ID. Required.
+   * @param assetId The asset's ID. Required.
    * @return an {@link Optional} containing the asset
    * or an {@link Optional#empty()} no asset with the provided id could be fetched.
    */
@@ -96,7 +97,7 @@ public class BynderService {
     Map<String, Object> pathParams = Map.of(ID, assetId);
     ResponseEntity<Entity> response = performApiCall(MEDIA_ID_PATH, pathParams, null, new ParameterizedTypeReference<>() {
     });
-    if (response.getStatusCode() == HttpStatus.OK) {
+    if (response != null && response.getStatusCode() == HttpStatus.OK) {
       return Optional.ofNullable(response.getBody());
     } else {
       return Optional.empty();
@@ -105,6 +106,7 @@ public class BynderService {
 
   /**
    * Retrieve a list of assets for the given ids.
+   * Note: This method still loads all pages for the given IDs as it's used internally.
    *
    * @param assetIds asset id
    * @return list of fetched assets
@@ -144,7 +146,6 @@ public class BynderService {
       } else {
         allFetched = true;
       }
-
     }
 
     return assets;
@@ -153,14 +154,14 @@ public class BynderService {
   /**
    * Retrieves the service-internal download URL of a single asset.
    *
-   * @param assetId The asset’s ID. Required.
+   * @param assetId The asset's ID. Required.
    * @return an {@link Optional} with the asset's service-internal download URL.
    */
   public Optional<String> getAssetDownloadById(@NonNull String assetId) {
     Map<String, Object> pathParams = Map.of(ID, assetId);
     ResponseEntity<Download> response = performApiCall(MEDIA_DOWNLOAD_PATH, pathParams, null, new ParameterizedTypeReference<>() {
     });
-    if (response.getStatusCode().equals(HttpStatus.OK)) {
+    if (response != null && response.getStatusCode().equals(HttpStatus.OK)) {
       return Optional.ofNullable(response.getBody()).map(Download::getS3File);
     } else {
       return Optional.empty();
@@ -168,24 +169,18 @@ public class BynderService {
   }
 
   /**
-   * Search assets by the given {@link MediaSearchQuery}.
+   * Search assets with pagination support - SINGLE PAGE ONLY.
    *
    * @param query search query
-   * @return
+   * @param page page number (1-based)
+   * @param limit items per page
+   * @return paginated search result
    */
-  public @NonNull List<Entity> searchAssets(MediaSearchQuery query) {
-    List<Entity> assets = new ArrayList<>();
-
-    int page = 1;
+  public @NonNull PaginatedResult<Entity> searchAssets(MediaSearchQuery query, int page, int limit) {
     Map<String, Object> queryParams = new HashMap<>();
-    queryParams.put(PAGE, page);
+    queryParams.put(PAGE, Math.max(1, page));
     queryParams.put(ORDER_BY, DEFAULT_ORDER_BY);
-
-    if (query.getLimit() > 0 && query.getLimit() <= MAX_LIMIT) {
-      queryParams.put(LIMIT, query.getLimit());
-    } else {
-      queryParams.put(LIMIT, DEFAULT_LIMIT);
-    }
+    queryParams.put(LIMIT, Math.min(Math.max(MIN_PER_PAGE, limit), MAX_PER_PAGE));
     queryParams.put(COUNT, true);
     queryParams.put(TOTAL, true);
 
@@ -194,10 +189,10 @@ public class BynderService {
             .map(ContentHubType::getName)
             .map(String::toLowerCase)
             .ifPresent(type -> {
-      if (ASSET_TYPES.contains(type)) {
-        queryParams.put(TYPE, type);
-      }
-    });
+              if (ASSET_TYPES.contains(type)) {
+                queryParams.put(TYPE, type);
+              }
+            });
 
     // Limit results to specific collection id if defined
     Optional.ofNullable(query.getCollectionId()).ifPresent(collectionId -> queryParams.put(COLLECTION_ID, collectionId));
@@ -206,181 +201,169 @@ public class BynderService {
       queryParams.put(KEYWORD, query.getTerm());
     }
 
-    boolean allFetched = false;
-    while (!allFetched) {
-      ResponseEntity<MediaSearchResult<Entity>> response = performApiCall(MEDIA_PATH, null, queryParams, new ParameterizedTypeReference<>() {
-      });
+    ResponseEntity<MediaSearchResult<Entity>> response = performApiCall(MEDIA_PATH, null, queryParams, new ParameterizedTypeReference<>() {
+    });
+
+    if (response != null && response.getBody() != null) {
       MediaSearchResult<Entity> searchResult = response.getBody();
-      if (searchResult != null) {
-        assets.addAll(searchResult.getMedia());
-        Optional<Integer> totalResultCount = Optional.ofNullable(searchResult.getCount()).map(MediaSearchResult.Count::getTotal);
+      int totalCount = Optional.ofNullable(searchResult.getCount())
+              .map(MediaSearchResult.Count::getTotal)
+              .orElse(0);
 
-        allFetched = totalResultCount.map(totalCount -> assets.size() >= totalCount).orElse(true);
-
-        if (query.getLimit() > 0) {
-          allFetched = assets.size() >= query.getLimit();
-        }
-
-      } else {
-        allFetched = true;
-      }
-
-      if (!allFetched) {
-        page++;
-        queryParams.put(PAGE, page);
-      }
+      return new PaginatedResult<>(searchResult.getMedia(), page, limit, totalCount);
     }
 
-    return assets;
+    return new PaginatedResult<>(new ArrayList<>(), page, limit, 0);
   }
 
   // --- COLLECTIONS ---------------------------------------------------------------------------------------------------
 
-  public List<Collection> getCollections() {
-    List<Collection> collections = new ArrayList<>();
-
-    int page = 1;
-    Map<String, Object> queryParams = new HashMap<>();
-    queryParams.put(PAGE, page);
-    queryParams.put(ORDER_BY, "name desc");
-    queryParams.put(COUNT, true);
-
-    boolean allFetched = false;
-    while (!allFetched) {
-      ResponseEntity<CollectionSearchResult> response = performApiCall(COLLECTIONS_PATH, null, queryParams, new ParameterizedTypeReference<>() {
-      });
-      CollectionSearchResult searchResult = response.getBody();
-      if (searchResult != null) {
-        collections.addAll(searchResult.getCollections());
-        allFetched = collections.size() == searchResult.getCount();
-      } else {
-        allFetched = true;
-      }
-
-      if (!allFetched) {
-        page++;
-        queryParams.put(PAGE, page);
-      }
-    }
-
-    return collections;
-  }
-
   /**
-   * Retrieve the assets of a specific collection.
+   * Get collections with pagination support - SINGLE PAGE ONLY.
    *
-   * @param collectionId collection id
-   * @return
+   * @param page page number (1-based)
+   * @param limit items per page
+   * @return single page of collections
    */
-  public List<Entity> getMediaInCollection(String collectionId) {
-    Map<String, Object> pathParams = Map.of(ID, collectionId);
-    ResponseEntity<List<String>> listResponseEntity = performApiCall(COLLECTIONS_MEDIA_PATH, pathParams, null, new ParameterizedTypeReference<>() {
-    });
-    List<String> assetIds = listResponseEntity.getBody();
-    List<Entity> assets = getAssetsByIds(assetIds);
-    return assets;
-  }
-
-// --- TAGS ------------------------------------------------------------------------------------------------------------
-
-  public List<Tag> getTags() {
-    List<Tag> tags = new ArrayList<>();
-
-    int page = 1;
+  public PaginatedResult<Collection> getCollections(int page, int limit) {
     Map<String, Object> queryParams = new HashMap<>();
-    queryParams.put(PAGE, page);
-    queryParams.put(ORDER_BY, "name desc");
-    queryParams.put(COUNT, true);
-
-    boolean allFetched = false;
-    while (!allFetched) {
-
-      ResponseEntity<List<Tag>> response = performApiCall(TAGS_PATH, null, queryParams, new ParameterizedTypeReference<>() {
-      });
-
-      if (response == null) {
-        allFetched = true;
-
-      } else {
-        List<Tag> fetchedTags = response.getBody();
-
-        if (fetchedTags != null && !fetchedTags.isEmpty()) {
-          tags.addAll(fetchedTags);
-        } else {
-          allFetched = true;
-        }
-
-        if (!allFetched) {
-          page++;
-          queryParams.put(PAGE, page);
-        }
-      }
-    }
-
-    return tags;
-  }
-
-  /**
-   * Retrieve a list of assets with the given tag.
-   *
-   * @param tag tag name
-   * @return list of fetched assets
-   */
-  public List<Entity> getAssetsByTag(String tag) {
-    return getAssetsByTags(List.of(tag));
-  }
-
-  /**
-   * Retrieve a list of assets with the given tags.
-   *
-   * @param tags list of tags
-   * @return list of fetched assets
-   */
-  public List<Entity> getAssetsByTags(List<String> tags) {
-    List<Entity> assets = new ArrayList<>();
-
-    if (tags == null || tags.isEmpty()) {
-      return assets;
-    }
-
-    int page = 1;
-    Map<String, Object> queryParams = new HashMap<>();
-    queryParams.put(TAGS, Joiner.on(",").join(tags));
-    queryParams.put(PAGE, page);
+    queryParams.put(PAGE, Math.max(1, page));
     queryParams.put(ORDER_BY, "name asc");
-    queryParams.put(LIMIT, 250);
+    queryParams.put(LIMIT, Math.min(Math.max(MIN_PER_PAGE, limit), MAX_PER_PAGE));
     queryParams.put(COUNT, true);
     queryParams.put(TOTAL, true);
 
-    boolean allFetched = false;
-    while (!allFetched) {
-      ResponseEntity<MediaSearchResult<Entity>> response = performApiCall(MEDIA_PATH, null, queryParams, new ParameterizedTypeReference<>() {
-      });
+    ResponseEntity<CollectionSearchResult> response = performApiCall(COLLECTIONS_PATH, null, queryParams, new ParameterizedTypeReference<>() {
+    });
 
-      if (response != null) {
-        MediaSearchResult<Entity> searchResult = response.getBody();
-        if (searchResult != null) {
-          assets.addAll(searchResult.getMedia());
+    if (response != null && response.getBody() != null) {
+      CollectionSearchResult searchResult = response.getBody();
+      int totalCount = searchResult.getCount();
 
-          Optional<Integer> totalResultCount = Optional.ofNullable(searchResult.getCount()).map(MediaSearchResult.Count::getTotal);
-          allFetched = totalResultCount.map(totalCount -> assets.size() >= totalCount).orElse(true);
-        } else {
-          allFetched = true;
-        }
-
-        if (!allFetched) {
-          page++;
-          queryParams.put(PAGE, page);
-        }
-      } else {
-        allFetched = true;
-      }
-
+      return new PaginatedResult<>(searchResult.getCollections(), page, limit, totalCount);
     }
 
-    return assets;
+    return new PaginatedResult<>(new ArrayList<>(), page, limit, 0);
   }
 
+  /**
+   * Retrieves the assets contained in a collection with pagination support.
+   *
+   * @param collectionId collection id
+   * @param page page number (1-based)
+   * @param limit items per page
+   * @return paginated result
+   */
+  public PaginatedResult<Entity> getMediaInCollection(String collectionId, int page, int limit) {
+    Map<String, Object> pathParams = Map.of(ID, collectionId);
+    ResponseEntity<List<String>> listResponseEntity = performApiCall(COLLECTIONS_MEDIA_PATH, pathParams, null, new ParameterizedTypeReference<>() {
+    });
+
+    List<String> assetIds = listResponseEntity != null ? listResponseEntity.getBody() : null;
+    if (assetIds == null || assetIds.isEmpty()) {
+      return new PaginatedResult<>(new ArrayList<>(), page, limit, 0);
+    }
+
+    // Manual pagination for collection assets
+    int totalCount = assetIds.size();
+    int startIndex = (page - 1) * limit;
+    int endIndex = Math.min(startIndex + limit, totalCount);
+
+    if (startIndex >= totalCount) {
+      return new PaginatedResult<>(new ArrayList<>(), page, limit, totalCount);
+    }
+
+    List<String> pageAssetIds = assetIds.subList(startIndex, endIndex);
+    List<Entity> assets = getAssetsByIds(pageAssetIds);
+
+    return new PaginatedResult<>(assets, page, limit, totalCount);
+  }
+
+  // --- TAGS ----------------------------------------------------------------------------------------------------------
+
+  /**
+   * Retrieves a list of tags.
+   *
+   * @return list of tags
+   */
+  public List<Tag> getTags() {
+    ResponseEntity<List<Tag>> response = performApiCall(TAGS_PATH, null, null, new ParameterizedTypeReference<>() {
+    });
+    return Optional.ofNullable(response != null ? response.getBody() : null).orElse(Collections.emptyList());
+  }
+
+  /**
+   * Get assets by tag with pagination support - SINGLE PAGE ONLY.
+   *
+   * @param tag tag name
+   * @param page page number (1-based)
+   * @param limit items per page
+   * @return single page of assets with the tag
+   */
+  public PaginatedResult<Entity> getAssetsByTag(String tag, int page, int limit) {
+    Map<String, Object> queryParams = new HashMap<>();
+    queryParams.put(TAGS, tag);
+    queryParams.put(PAGE, Math.max(1, page));
+    queryParams.put(ORDER_BY, "name asc");
+    queryParams.put(LIMIT, Math.min(Math.max(MIN_PER_PAGE, limit), MAX_PER_PAGE));
+    queryParams.put(COUNT, true);
+    queryParams.put(TOTAL, true);
+
+    ResponseEntity<MediaSearchResult<Entity>> response = performApiCall(MEDIA_PATH, null, queryParams, new ParameterizedTypeReference<>() {
+    });
+
+    if (response != null && response.getBody() != null) {
+      MediaSearchResult<Entity> searchResult = response.getBody();
+      int totalCount = Optional.ofNullable(searchResult.getCount())
+              .map(MediaSearchResult.Count::getTotal)
+              .orElse(0);
+
+      return new PaginatedResult<>(searchResult.getMedia(), page, limit, totalCount);
+    }
+
+    return new PaginatedResult<>(new ArrayList<>(), page, limit, 0);
+  }
+
+  /**
+   * Result class for paginated queries.
+   */
+  public static class PaginatedResult<T> {
+    private final List<T> items;
+    private final int page;
+    private final int limit;
+    private final int totalCount;
+
+    public PaginatedResult(List<T> items, int page, int limit, int totalCount) {
+      this.items = items;
+      this.page = page;
+      this.limit = limit;
+      this.totalCount = totalCount;
+    }
+
+    public List<T> getItems() {
+      return items;
+    }
+
+    public int getPage() {
+      return page;
+    }
+
+    public int getLimit() {
+      return limit;
+    }
+
+    public int getTotalCount() {
+      return totalCount;
+    }
+
+    public boolean hasNextPage() {
+      return (page * limit) < totalCount;
+    }
+
+    public int getTotalPages() {
+      return (int) Math.ceil((double) totalCount / limit);
+    }
+  }
 
   // --- INTERNAL ------------------------------------------------------------------------------------------------------
 
