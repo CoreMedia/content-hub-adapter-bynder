@@ -285,6 +285,10 @@ public class BynderContentHubAdapter implements ContentHubAdapter, ContentHubSea
       return new ContentHubSearchResult(Collections.emptyList());
     }
 
+    if (limit == -1) {
+      limit = BynderService.MAX_PER_PAGE;
+    }
+
     // search for id OR query term
     MediaSearchQuery mediaSearchQuery;
     if (query.startsWith(ID_PREFIX)) {

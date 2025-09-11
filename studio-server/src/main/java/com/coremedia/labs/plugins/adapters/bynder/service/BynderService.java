@@ -60,7 +60,7 @@ public class BynderService {
   public static final int MAX_LIMIT = 1000;
   private static final String DEFAULT_ORDER_BY = "dateModified desc";
   private static final int MIN_PER_PAGE = 3;
-  private static final int MAX_PER_PAGE = 200;
+  public static final int MAX_PER_PAGE = 200;
   private static final int QUERY_PARAM_VALUE_ACTIVE = 1;
 
   private static final List<String> ASSET_TYPES = List.of("image" , "document" , "audio" , "video" , "3d");
