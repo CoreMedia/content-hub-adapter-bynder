@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.0.0
+
+- Update to CMCC 13 
+- Compatible CoreMedia Content Cloud version: `2512.0.0`
+
+## 2.0.5
+
+- Replace `StructService` constructor injection with `CapConnection`
+  - Remove `StructService` from constructor as it's unavailable in plugin context
+  - Use `CapConnection` to retrieve `StructService` instead
+  - Ensures proper service access within plugin environment
+- Compatible CoreMedia Content Cloud version: `2401.3`
+
+## 2.0.4
+
+- This release introduces two new configuration options in the Bynder Content Hub settings:
+  - **externalReferenceModeEnabled** When enabled, imports will reference the delivery URL of the original asset hosted externally by Bynder. Associated metadata is stored in the assetInfo structure within localSettings, including native width and height for images.
+  - **thumbnailImportModeEnabled** When enabled, imported image files are scaled down to thumbnail size. This optimization allows editors to preview assets in Studio without consuming unnecessary storage space.
+- These enhancements provide greater flexibility for asset management and more efficient handling of image previews within Studio.
+- Compatible CoreMedia Content Cloud version: `2401.3`
+
 ## 2.0.3
 
 - Adapter can now also import videos from Bynder

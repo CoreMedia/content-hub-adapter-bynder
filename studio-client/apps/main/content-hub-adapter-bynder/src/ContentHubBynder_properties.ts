@@ -1,5 +1,5 @@
-import CoreIcons_properties from "@coremedia/studio-client.core-icons/CoreIcons_properties";
-import icon from "./icons/bynder_24.svg";
+import icon from "./icons/bynder.svg";
+import { typeImageGallery, tag } from "@coremedia/studio-client.common-icons";
 import SvgIconUtil from "@coremedia/studio-client.base-models/util/SvgIconUtil";
 
 /**
@@ -51,9 +51,9 @@ const ContentHubBynder_properties: ContentHubBynder_properties = {
   folder_type_portal_name: "Portal",
   folder_type_portal_icon: SvgIconUtil.getIconStyleClassForSvgIcon(icon),
   folder_type_collection_name: "Collection",
-  folder_type_collection_icon: CoreIcons_properties.type_image_gallery,
+  folder_type_collection_icon: SvgIconUtil.getIconStyleClassForSvgIcon(typeImageGallery),
   folder_type_tag_name: "Tag",
-  folder_type_tag_icon: CoreIcons_properties.tag,
+  folder_type_tag_icon: SvgIconUtil.getIconStyleClassForSvgIcon(tag),
 
   item_type_all_name: "All",
   item_type_image_name: "Image",

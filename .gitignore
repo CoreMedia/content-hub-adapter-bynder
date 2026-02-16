@@ -61,3 +61,7 @@ yarn.lock
 
 #shade plugin
 dependency-reduced-pom.xml
+
+# Test credentials
+**/bynder-test.properties
+
