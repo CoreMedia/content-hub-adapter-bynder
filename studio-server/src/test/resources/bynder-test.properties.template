@@ -1,0 +1,6 @@
+# Copy this file to bynder-test.properties and add your credentials
+# bynder-test.properties should be added to .gitignore
+
+bynder.apiEndpoint=https://your-instance.bynder.com/api/v4/
+bynder.accessToken=your-access-token-here
+

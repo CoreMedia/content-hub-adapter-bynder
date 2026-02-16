@@ -6,11 +6,15 @@ import com.coremedia.labs.plugins.adapters.bynder.service.model.Entity;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.Image;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.MediaSearchQuery;
 import com.coremedia.labs.plugins.adapters.bynder.service.model.Video;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,12 +23,40 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BynderServiceIT {
 
+  private static String apiEndpoint;
+  private static String accessToken;
+
   private BynderService testling;
+
+  @BeforeAll
+  public static void setUpClass() throws IOException {
+    // Try to load from system properties first, then fall back to properties file
+    apiEndpoint = System.getProperty("bynder.apiEndpoint");
+    accessToken = System.getProperty("bynder.accessToken");
+
+    if (apiEndpoint == null || accessToken == null) {
+      Properties properties = new Properties();
+      try (InputStream input = BynderServiceIT.class.getClassLoader()
+              .getResourceAsStream("bynder-test.properties")) {
+        if (input != null) {
+          properties.load(input);
+          if (apiEndpoint == null) {
+            apiEndpoint = properties.getProperty("bynder.apiEndpoint");
+          }
+          if (accessToken == null) {
+            accessToken = properties.getProperty("bynder.accessToken");
+          }
+        }
+      }
+    }
+
+    assertNotNull(apiEndpoint, "bynder.apiEndpoint must be set via system property or bynder-test.properties");
+    assertNotNull(accessToken, "bynder.accessToken must be set via system property or bynder-test.properties");
+  }
 
   @BeforeEach
   public void setUp() {
-    testling = new BynderService("https://coremedia-sandbox.bynder.com/api/v4/",
-            "7408c90ddc23f69504d46dd84f60791830d6befcee828797a4972f432ff53dd9");
+    testling = new BynderService(apiEndpoint, accessToken);
   }
 
   @Test
